@@ -1,3 +1,4 @@
+/* ================= ADMIN KEY (ENV SUPPORT ADDED) ================= */
 const ADMIN_KEY = process.env.ADMIN_KEY || "devkey";
 
 
