@@ -204,3 +204,21 @@ document.addEventListener("keydown",(e)=>{
         }
     }
 });
+/* ===== TIMER OCCLUSION MASK ===== */
+
+const mask = document.getElementById("timerMask");
+
+function updateMask(){
+    const rect = clock.getBoundingClientRect();
+
+    const padX = 120;
+    const padY = 70;
+
+    mask.style.left = (rect.left - padX) + "px";
+    mask.style.top = (rect.top - padY) + "px";
+    mask.style.width = (rect.width + padX*2) + "px";
+    mask.style.height = (rect.height + padY*2) + "px";
+}
+
+setInterval(updateMask, 100);
+window.addEventListener("resize", updateMask);

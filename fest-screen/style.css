@@ -151,3 +151,10 @@ body{
     backface-visibility:hidden;
     transform:translateZ(0);
 }
+#timerMask{
+    position:fixed;
+    pointer-events:none;
+    z-index:14; /* below timer(15) above logos(5) */
+    background:white;
+    border-radius:40px;
+}
