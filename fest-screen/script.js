@@ -211,8 +211,8 @@ const mask = document.getElementById("timerMask");
 function updateMask(){
     const rect = clock.getBoundingClientRect();
 
-    const padX = 120;
-    const padY = 70;
+    const padX = 28;
+    const padY = 18;
 
     mask.style.left = (rect.left - padX) + "px";
     mask.style.top = (rect.top - padY) + "px";
