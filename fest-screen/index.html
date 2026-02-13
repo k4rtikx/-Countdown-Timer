@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Fest Screen</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="header">
+    <img src="assets/logos/au.png">
+</div>
+
+<div id="logoLayer"></div>
+
+<div id="readMask"></div>
+<div id="focusMask"></div>
+
+<div class="timer">
+    <span id="clock">36:00:00</span>
+</div>
+
+<!-- QR ABOVE VIDEO -->
+<div id="qrLayer">
+    <img id="qrImage" src="assets/qr.png">
+</div>
+
+<div id="videoLayer">
+    <video id="video" src="assets/videos/vid.mp4"></video>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

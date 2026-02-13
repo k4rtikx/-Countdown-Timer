@@ -1,0 +1,174 @@
+/* ================= BASE ================= */
+
+body{
+    margin:0;
+    background:#000;
+    overflow:hidden;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+/* ================= HEADER ================= */
+
+.header{
+    position:fixed;
+    top:20px;
+    width:100%;
+    display:flex;
+    justify-content:center;
+    z-index:20;
+}
+
+.header img{
+    height:80px;
+    opacity:0.9;
+}
+
+/* ================= TIMER ================= */
+
+.timer{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    z-index:15;
+}
+
+#clock{
+    position:relative;
+    color:white;
+    font-size:170px;
+    font-weight:bold;
+
+    /* BLACK COLLISION BORDER */
+    text-shadow:
+        0 0 2px #000,
+        0 0 6px #000,
+        0 0 14px #000,
+        0 0 28px #000,
+        0 0 50px #000,
+        0 0 90px #000,
+
+        /* glow on top */
+        0 0 25px rgba(255,255,255,0.9),
+        0 0 55px rgba(255,255,255,0.65);
+}
+
+/* hard black edge only */
+#clock::before{
+    content: attr(data-time);
+    position:absolute;
+    inset:0;
+    color:transparent;
+
+    -webkit-text-stroke: 14px black;
+    z-index:-1;
+}
+
+
+
+/* ================= LOGO FLOW ================= */
+
+#logoLayer{
+    position:fixed;
+    inset:0;
+    z-index:5;
+    overflow:hidden;
+}
+
+.logo{
+    position:absolute;
+    width:130px;
+    height:70px;
+    background-size:contain;
+    background-repeat:no-repeat;
+    background-position:center;
+
+    opacity:0.95; /* was killing visibility */
+
+    filter:
+        brightness(1.35)
+        contrast(1.25)
+        drop-shadow(0 0 8px rgba(255,255,255,0.35));
+}
+
+
+/* ================= MASKS ================= */
+
+#readMask{
+    position:fixed;
+    inset:0;
+    z-index:10;
+    pointer-events:none;
+
+    background:
+    radial-gradient(circle at center,
+        rgba(0,0,0,0) 320px,
+        rgba(0,0,0,0.45) 750px,
+        rgba(0,0,0,0.75) 1400px);
+}
+
+
+#focusMask{
+    position:fixed;
+    inset:0;
+    z-index:12;
+    pointer-events:none;
+    box-shadow:inset 0 0 180px rgba(0,0,0,0.55);
+}
+
+
+/* ================= VIDEO ================= */
+
+#videoLayer{
+    position:fixed;
+    inset:0;
+    background:black;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:50;
+}
+
+#video{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+#logoMask{
+    position:fixed;
+    inset:0;
+    z-index:6; /* above logos, below masks */
+    pointer-events:none;
+}
+
+/* ================= QR OVERLAY ================= */
+
+#qrLayer{
+    position:fixed;
+    inset:0;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    background:rgba(0,0,0,0.65);
+    z-index:40;
+}
+
+#qrLayer{
+    position:fixed;
+    inset:0;
+    display:none;
+    justify-content:center;
+    align-items:center;
+
+    /* darker backdrop for readability */
+    background:rgba(0,0,0,0.82);
+
+    /* ABOVE masks, BELOW video */
+    z-index:45;
+
+    /* prevents animation flicker */
+    backface-visibility:hidden;
+    transform:translateZ(0);
+}
+
