@@ -33,15 +33,9 @@ if (fs.existsSync(SAVE_FILE)) {
 }
 
 /* ---- RECOVER TIMER AFTER SERVER RESTART (ADDED) ---- */
-if(!state.paused){
-    const remain = state.endTime - Date.now();
-
-    if(remain <= 0){
-        state.remaining = 0;
-        state.paused = true;
-    }else{
-        state.endTime = Date.now() + remain;
-    }
+/* ---- DO NOT CHANGE END TIME AFTER RESTART ---- */
+if(!state.endTime){
+    state.endTime = Date.now() + state.duration;
     fs.writeFileSync(SAVE_FILE, JSON.stringify(state));
 }
 
