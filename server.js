@@ -12,36 +12,35 @@ const io = new Server(server);
 
 app.use(express.static(path.join(__dirname, "fest-screen")));
 
-/* =========================================================
-   REAL WORLD COUNTDOWN TIMER (FIX)
-   ========================================================= */
 
-const DURATION = 36 * 60 * 60 * 1000; // 36 hours
-let eventStartTime = null;   // set once by admin
-let videoPlaying = false;
+/* ================= REAL GLOBAL TIMER ================= */
+
+const DURATION = 36 * 60 * 60 * 1000;
+
+// absolute start time (never saved to file)
+let eventStart = Date.now();   // start immediately when server boots
+
+let state = {
+    video:false
+};
+
 
 /* ---------- BUILD LIVE STATE ---------- */
 function buildSyncState() {
 
-    // timer never started yet
-    if (!eventStartTime) {
-        return {
-            notStarted: true,
-            video: videoPlaying
-        };
-    }
+    const endTime = eventStart + DURATION;
 
-    const endTime = eventStartTime + DURATION;
     let remaining = endTime - Date.now();
     if (remaining < 0) remaining = 0;
 
     return {
         endTime,
-        paused: false,        // pause removed (real countdown)
+        paused:false,
         remaining,
-        video: videoPlaying
+        video: state.video
     };
 }
+
 
 /* ---------- SOCKET ---------- */
 io.on("connection", (socket) => {
@@ -49,7 +48,7 @@ io.on("connection", (socket) => {
     const isAdmin = socket.handshake.auth?.admin === ADMIN_KEY;
     console.log("Client connected:", socket.id, isAdmin ? "(ADMIN)" : "(VIEWER)");
 
-    // send current state once
+    // send current state ONCE
     socket.emit("sync", buildSyncState());
 
     function denyIfNotAdmin(){
@@ -60,12 +59,12 @@ io.on("connection", (socket) => {
         return false;
     }
 
-    /* ===== START / RESET TIMER ===== */
+    /* ===== RESET (RESTART TIMER FROM NOW) ===== */
     socket.on("reset", () => {
         if(denyIfNotAdmin()) return;
 
-        eventStartTime = Date.now();
-        console.log("TIMER STARTED AT:", eventStartTime);
+        eventStart = Date.now();
+        console.log("TIMER RESET AT:", eventStart);
 
         io.emit("sync", buildSyncState());
     });
@@ -73,13 +72,15 @@ io.on("connection", (socket) => {
     /* ===== VIDEO CONTROL ===== */
     socket.on("playVideo", () => {
         if(denyIfNotAdmin()) return;
-        videoPlaying = true;
+
+        state.video = true;
         io.emit("sync", buildSyncState());
     });
 
     socket.on("stopVideo", () => {
         if(denyIfNotAdmin()) return;
-        videoPlaying = false;
+
+        state.video = false;
         io.emit("sync", buildSyncState());
     });
 });
