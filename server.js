@@ -1,4 +1,5 @@
-const ADMIN_KEY = "fest123";
+const ADMIN_KEY = process.env.ADMIN_KEY || "devkey";
+
 
 const express = require("express");
 const http = require("http");
