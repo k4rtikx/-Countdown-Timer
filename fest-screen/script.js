@@ -49,7 +49,16 @@ socket.on("sync", (state) => {
         if(state.video){
             videoLayer.style.display = "flex";
             video.currentTime = 0;
-            video.play();
+
+            // ===== AUTOPLAY FIX =====
+            video.muted = false;
+            video.play().catch(() => {
+                console.log("Autoplay blocked — retrying muted");
+                video.muted = true;
+                video.play();
+            });
+            // ========================
+
         }else{
             video.pause();
             videoLayer.style.display = "none";
