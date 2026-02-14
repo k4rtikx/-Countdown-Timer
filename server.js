@@ -16,18 +16,28 @@ app.use(express.static(path.join(__dirname, "fest-screen")));
 
 /* ================= REAL GLOBAL TIMER ================= */
 
-/* duration stays 36 hours */
 const DURATION = 36 * 60 * 60 * 1000;
-
-/* file that permanently stores start time */
 const START_FILE = "start.txt";
 
-/* load previous start if exists */
+/* ---------- SAFE LOAD (important fix) ---------- */
 let eventStart = null;
 
-if (fs.existsSync(START_FILE)) {
-    eventStart = Number(fs.readFileSync(START_FILE, "utf8"));
-    console.log("Recovered start time:", new Date(eventStart));
+try {
+    if (fs.existsSync(START_FILE)) {
+        const raw = fs.readFileSync(START_FILE, "utf8").trim();
+        const parsed = Number(raw);
+
+        if (!isNaN(parsed) && parsed > 1000000000000) {
+            eventStart = parsed;
+            console.log("Recovered start time:", new Date(eventStart));
+        } else {
+            console.log("Corrupted start file — ignoring");
+        }
+    } else {
+        console.log("No previous start found");
+    }
+} catch (err) {
+    console.log("Start file read error:", err.message);
 }
 
 let state = {
@@ -38,7 +48,6 @@ let state = {
 /* ---------- BUILD LIVE STATE ---------- */
 function buildSyncState() {
 
-    /* if admin never started event yet */
     if (!eventStart) {
         return {
             notStarted:true,
@@ -60,14 +69,12 @@ function buildSyncState() {
 }
 
 
-
 /* ---------- SOCKET ---------- */
 io.on("connection", (socket) => {
 
     const isAdmin = socket.handshake.auth?.admin === ADMIN_KEY;
     console.log("Client connected:", socket.id, isAdmin ? "(ADMIN)" : "(VIEWER)");
 
-    // send current state ONCE
     socket.emit("sync", buildSyncState());
 
     function denyIfNotAdmin(){
@@ -84,31 +91,31 @@ io.on("connection", (socket) => {
 
         eventStart = Date.now();
 
-        /* save permanently so timer survives restart */
-        fs.writeFileSync(START_FILE, String(eventStart));
-
-        console.log("EVENT STARTED:", new Date(eventStart));
+        try {
+            fs.writeFileSync(START_FILE, String(eventStart));
+            console.log("EVENT STARTED:", new Date(eventStart));
+        } catch(e) {
+            console.log("Failed to save start time:", e.message);
+        }
 
         io.emit("sync", buildSyncState());
     });
 
+    socket.on("forceSync", () => {
+        socket.emit("sync", buildSyncState());
+    });
 
     /* ===== VIDEO CONTROL ===== */
     socket.on("playVideo", () => {
         if(denyIfNotAdmin()) return;
-
         state.video = true;
         io.emit("sync", buildSyncState());
     });
 
     socket.on("stopVideo", () => {
         if(denyIfNotAdmin()) return;
-
         state.video = false;
         io.emit("sync", buildSyncState());
-    });
-    socket.on("forceSync", () => {
-    socket.emit("sync", buildSyncState());
     });
 
 });
