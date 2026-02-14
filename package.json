@@ -5,13 +5,13 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js"
-  }
-,
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@upstash/redis": "^1.36.2",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "socket.io": "^4.8.3"

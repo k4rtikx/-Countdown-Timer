@@ -1,11 +1,17 @@
-/* ================= ADMIN KEY (ENV SUPPORT ADDED) ================= */
+/* ================= ADMIN KEY ================= */
 const ADMIN_KEY = process.env.ADMIN_KEY || "devkey";
 
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 const path = require("path");
-const fs = require("fs");
+
+/* ===== REDIS ===== */
+const { Redis } = require("@upstash/redis");
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
+});
 
 const app = express();
 const server = http.createServer(app);
@@ -13,115 +19,79 @@ const io = new Server(server);
 
 app.use(express.static(path.join(__dirname, "fest-screen")));
 
-
-/* ================= REAL GLOBAL TIMER ================= */
+/* ================= PERSISTENT TIMER ================= */
 
 const DURATION = 36 * 60 * 60 * 1000;
-const START_FILE = "start.txt";
 
-/* ---------- SAFE LOAD (important fix) ---------- */
-let eventStart = null;
+let state = { video:false };
 
-try {
-    if (fs.existsSync(START_FILE)) {
-        const raw = fs.readFileSync(START_FILE, "utf8").trim();
-        const parsed = Number(raw);
-
-        if (!isNaN(parsed) && parsed > 1000000000000) {
-            eventStart = parsed;
-            console.log("Recovered start time:", new Date(eventStart));
-        } else {
-            console.log("Corrupted start file — ignoring");
-        }
-    } else {
-        console.log("No previous start found");
-    }
-} catch (err) {
-    console.log("Start file read error:", err.message);
+/* ---------- GET START TIME ---------- */
+async function getStart(){
+    return await redis.get("eventStart");
 }
 
-let state = {
-    video:false
-};
+/* ---------- SET START TIME ---------- */
+async function setStart(ts){
+    await redis.set("eventStart", ts);
+}
 
+/* ---------- BUILD STATE ---------- */
+async function buildSyncState() {
 
-/* ---------- BUILD LIVE STATE ---------- */
-function buildSyncState() {
+    const eventStart = await getStart();
 
     if (!eventStart) {
-        return {
-            notStarted:true,
-            video: state.video
-        };
+        return { notStarted:true, video: state.video };
     }
 
-    const endTime = eventStart + DURATION;
-
+    const endTime = Number(eventStart) + DURATION;
     let remaining = endTime - Date.now();
     if (remaining < 0) remaining = 0;
 
     return {
         endTime,
-        paused:false,
         remaining,
+        paused:false,
         video: state.video
     };
 }
 
-
 /* ---------- SOCKET ---------- */
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
 
     const isAdmin = socket.handshake.auth?.admin === ADMIN_KEY;
-    console.log("Client connected:", socket.id, isAdmin ? "(ADMIN)" : "(VIEWER)");
+    console.log("Connected:", socket.id, isAdmin?"ADMIN":"VIEW");
 
-    socket.emit("sync", buildSyncState());
+    socket.emit("sync", await buildSyncState());
 
-    function denyIfNotAdmin(){
-        if(!isAdmin){
-            console.log("Blocked non-admin action:", socket.id);
-            return true;
-        }
-        return false;
-    }
+    function deny(){ if(!isAdmin) return true; }
 
-    /* ===== RESET = START / RESTART HACKATHON ===== */
-    socket.on("reset", () => {
-        if(denyIfNotAdmin()) return;
+    /* START / RESTART EVENT */
+    socket.on("reset", async () => {
+        if(deny()) return;
 
-        eventStart = Date.now();
+        const now = Date.now();
+        await setStart(now);
 
-        try {
-            fs.writeFileSync(START_FILE, String(eventStart));
-            console.log("EVENT STARTED:", new Date(eventStart));
-        } catch(e) {
-            console.log("Failed to save start time:", e.message);
-        }
+        console.log("EVENT STARTED:", new Date(now));
 
-        io.emit("sync", buildSyncState());
+        io.emit("sync", await buildSyncState());
     });
 
-    socket.on("forceSync", () => {
-        socket.emit("sync", buildSyncState());
-    });
+    socket.on("forceSync", async ()=> socket.emit("sync", await buildSyncState()));
 
-    /* ===== VIDEO CONTROL ===== */
-    socket.on("playVideo", () => {
-        if(denyIfNotAdmin()) return;
+    socket.on("playVideo", async () => {
+        if(deny()) return;
         state.video = true;
-        io.emit("sync", buildSyncState());
+        io.emit("sync", await buildSyncState());
     });
 
-    socket.on("stopVideo", () => {
-        if(denyIfNotAdmin()) return;
+    socket.on("stopVideo", async () => {
+        if(deny()) return;
         state.video = false;
-        io.emit("sync", buildSyncState());
+        io.emit("sync", await buildSyncState());
     });
-
 });
 
 const PORT = process.env.PORT || 3000;
-
-server.listen(PORT, "0.0.0.0", () =>
-    console.log("SERVER RUNNING ON PORT", PORT)
-);
+server.listen(PORT,"0.0.0.0",()=>console.log("SERVER RUNNING",PORT));
