@@ -1,5 +1,4 @@
 node_modules/
-timer.json
 .env
 .DS_Store
 Thumbs.db

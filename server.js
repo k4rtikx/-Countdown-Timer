@@ -5,6 +5,7 @@ const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 const path = require("path");
+const fs = require("fs");
 
 const app = express();
 const server = http.createServer(app);
@@ -15,11 +16,19 @@ app.use(express.static(path.join(__dirname, "fest-screen")));
 
 /* ================= REAL GLOBAL TIMER ================= */
 
-/* ================= REAL WORLD DEADLINE TIMER ================= */
+/* duration stays 36 hours */
+const DURATION = 36 * 60 * 60 * 1000;
 
-// SET YOUR HACKATHON END TIME HERE (IST)
-const EVENT_END = new Date("2026-02-16T09:00:00+05:30").getTime();
+/* file that permanently stores start time */
+const START_FILE = "start.txt";
 
+/* load previous start if exists */
+let eventStart = null;
+
+if (fs.existsSync(START_FILE)) {
+    eventStart = Number(fs.readFileSync(START_FILE, "utf8"));
+    console.log("Recovered start time:", new Date(eventStart));
+}
 
 let state = {
     video:false
@@ -29,11 +38,21 @@ let state = {
 /* ---------- BUILD LIVE STATE ---------- */
 function buildSyncState() {
 
-    let remaining = EVENT_END - Date.now();
+    /* if admin never started event yet */
+    if (!eventStart) {
+        return {
+            notStarted:true,
+            video: state.video
+        };
+    }
+
+    const endTime = eventStart + DURATION;
+
+    let remaining = endTime - Date.now();
     if (remaining < 0) remaining = 0;
 
     return {
-        endTime: EVENT_END,
+        endTime,
         paused:false,
         remaining,
         video: state.video
@@ -59,9 +78,17 @@ io.on("connection", (socket) => {
         return false;
     }
 
-    /* ===== RESET (RESTART TIMER FROM NOW) ===== */
+    /* ===== RESET = START / RESTART HACKATHON ===== */
     socket.on("reset", () => {
         if(denyIfNotAdmin()) return;
+
+        eventStart = Date.now();
+
+        /* save permanently so timer survives restart */
+        fs.writeFileSync(START_FILE, String(eventStart));
+
+        console.log("EVENT STARTED:", new Date(eventStart));
+
         io.emit("sync", buildSyncState());
     });
 
