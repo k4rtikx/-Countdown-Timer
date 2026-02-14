@@ -107,6 +107,10 @@ io.on("connection", (socket) => {
         state.video = false;
         io.emit("sync", buildSyncState());
     });
+    socket.on("forceSync", () => {
+    socket.emit("sync", buildSyncState());
+    });
+
 });
 
 const PORT = process.env.PORT || 3000;
