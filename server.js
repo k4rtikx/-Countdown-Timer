@@ -15,10 +15,11 @@ app.use(express.static(path.join(__dirname, "fest-screen")));
 
 /* ================= REAL GLOBAL TIMER ================= */
 
-const DURATION = 36 * 60 * 60 * 1000;
+/* ================= REAL WORLD DEADLINE TIMER ================= */
 
-// absolute start time (never saved to file)
-let eventStart = Date.now();   // start immediately when server boots
+// SET YOUR HACKATHON END TIME HERE (IST)
+const EVENT_END = new Date("2026-02-16T09:00:00+05:30").getTime();
+
 
 let state = {
     video:false
@@ -28,18 +29,17 @@ let state = {
 /* ---------- BUILD LIVE STATE ---------- */
 function buildSyncState() {
 
-    const endTime = eventStart + DURATION;
-
-    let remaining = endTime - Date.now();
+    let remaining = EVENT_END - Date.now();
     if (remaining < 0) remaining = 0;
 
     return {
-        endTime,
+        endTime: EVENT_END,
         paused:false,
         remaining,
         video: state.video
     };
 }
+
 
 
 /* ---------- SOCKET ---------- */
@@ -62,12 +62,9 @@ io.on("connection", (socket) => {
     /* ===== RESET (RESTART TIMER FROM NOW) ===== */
     socket.on("reset", () => {
         if(denyIfNotAdmin()) return;
-
-        eventStart = Date.now();
-        console.log("TIMER RESET AT:", eventStart);
-
         io.emit("sync", buildSyncState());
     });
+
 
     /* ===== VIDEO CONTROL ===== */
     socket.on("playVideo", () => {
