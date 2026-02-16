@@ -14,25 +14,39 @@ const redis = new Redis({
 });
 
 const app = express();
+
+/* ---------- FAST HEALTH CHECK (prevents long loading page) ---------- */
+app.get("/health", (req,res)=>res.status(200).send("OK"));
+
+/* ---------- ROOT QUICK RESPONSE (Render probe hits / ) ---------- */
+app.get("/", (req,res,next)=>next());
+
+/* ---------- STATIC ---------- */
+app.use(express.static(path.join(__dirname, "fest-screen")));
+
+/* ================= SERVER ================= */
 const server = http.createServer(app);
 const io = new Server(server);
-
-app.use(express.static(path.join(__dirname, "fest-screen")));
 
 /* ================= PERSISTENT TIMER ================= */
 
 const DURATION = 36 * 60 * 60 * 1000;
-
 let state = { video:false };
 
 /* ---------- GET START TIME ---------- */
 async function getStart(){
-    return await redis.get("eventStart");
+    try {
+        return await redis.get("eventStart");
+    } catch {
+        return null; // don't block boot if redis cold
+    }
 }
 
 /* ---------- SET START TIME ---------- */
 async function setStart(ts){
-    await redis.set("eventStart", ts);
+    try {
+        await redis.set("eventStart", ts);
+    } catch {}
 }
 
 /* ---------- BUILD STATE ---------- */
@@ -66,7 +80,6 @@ io.on("connection", async (socket) => {
 
     function deny(){ if(!isAdmin) return true; }
 
-    /* START / RESTART EVENT */
     socket.on("reset", async () => {
         if(deny()) return;
 
@@ -74,7 +87,6 @@ io.on("connection", async (socket) => {
         await setStart(now);
 
         console.log("EVENT STARTED:", new Date(now));
-
         io.emit("sync", await buildSyncState());
     });
 
@@ -93,5 +105,6 @@ io.on("connection", async (socket) => {
     });
 });
 
+/* ================= START ================= */
 const PORT = process.env.PORT || 3000;
 server.listen(PORT,"0.0.0.0",()=>console.log("SERVER RUNNING",PORT));
