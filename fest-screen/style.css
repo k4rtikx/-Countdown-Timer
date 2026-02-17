@@ -110,20 +110,13 @@ body{
     display:none;
     justify-content:center;
     align-items:center;
-    z-index:50;
+    z-index:40;
 }
 
 #video{
     width:100%;
     height:100%;
     object-fit:cover;
-}
-
-#logoMask{
-    position:fixed;
-    inset:0;
-    z-index:6;
-    pointer-events:none;
 }
 
 /* ================= QR OVERLAY ================= */
@@ -154,69 +147,47 @@ body{
     display:none;
 }
 
-
 /* ========================================================= */
-/* ====================== LAYOUT ENGINE ===================== */
+/* ============ VIDEO MODE (SMALL TIMER OVERLAY) ============ */
 /* ========================================================= */
 
-#screenLayout{
-    position:fixed;
-    inset:0;
-    display:flex;
-    flex-direction:row;
+/* video fullscreen */
+body.video-mode #videoLayer{
+    display:flex !important;
+    z-index:40;
 }
 
-/* default: timer fullscreen */
-#timerContainer{
-    position:relative;
-    width:100%;
-    height:100%;
-    transition:all .5s ease;
-}
-
-#videoContainer{
-    position:relative;
-    width:0%;
-    height:100%;
-    overflow:hidden;
-    transition:all .5s ease;
-}
-
-/* ===== VIDEO MODE ACTIVE ===== */
-
-body.video-mode #timerContainer{
-    width:28%;
-    min-width:320px;
-    background:#000;
+/* small timer top-right */
+body.video-mode .timer{
+    top:30px;
+    right:40px;
+    left:auto;
+    transform:none;
     z-index:60;
 }
 
-body.video-mode #videoContainer{
-    width:72%;
+/* smaller digits */
+body.video-mode #clock{
+    font-size:65px;
 }
 
-/* video fills its panel */
-body.video-mode #videoLayer{
-    position:absolute;
-    inset:0;
-    display:flex !important;
-}
-
-/* prevent fullscreen timer locking */
-body.video-mode .timer{
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%) scale(.45);
-}
-
-/* shrink masks with timer */
+/* mask follows timer and hides logos */
 body.video-mode #timerMask{
-    position:absolute;
+    z-index:59;
 }
 
-body.video-mode #readMask,
-body.video-mode #focusMask,
+/* logos stay under mask but above video */
 body.video-mode #logoLayer{
+    z-index:55;
+}
+
+/* keep header visible */
+body.video-mode .header{
+    z-index:65;
+}
+
+/* disable big reading glow when video plays */
+body.video-mode #readMask,
+body.video-mode #focusMask{
     display:none;
 }
