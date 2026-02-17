@@ -214,6 +214,26 @@ if(e.key==="f"){
 const mask = document.getElementById("timerMask");
 
 function updateMask(){
+    /* ===== DAY LABEL MASK TRACK ===== */
+const dayMask = document.getElementById("dayMask");
+
+function updateDayMask(){
+    if(!dayLabel) return;
+
+    const rect = dayLabel.getBoundingClientRect();
+
+    const padX = 40;
+    const padY = 22;
+
+    dayMask.style.left = (rect.left - padX) + "px";
+    dayMask.style.top = (rect.top - padY) + "px";
+    dayMask.style.width = (rect.width + padX*2) + "px";
+    dayMask.style.height = (rect.height + padY*2) + "px";
+}
+
+setInterval(updateDayMask,100);
+window.addEventListener("resize",updateDayMask);
+
 const rect = clock.getBoundingClientRect();
 
 const padX = 28;

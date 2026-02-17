@@ -51,7 +51,7 @@ body{
     top:0;
     left:0;
     width:100%;
-    height:220px;
+    height:300px;
     background:#ffffff;
     z-index:18;
     pointer-events:none;
@@ -242,4 +242,13 @@ body.video-mode #headerCleanZone{
 
 body.video-mode #dayLabel{
     display:none !important;
+}
+/* ===== DAY LABEL PROTECTION ZONE ===== */
+#dayMask{
+    position:fixed;
+    pointer-events:none;
+    background:#ffffff;
+    border-radius:40px;
+    z-index:14;
+    transition: all 0.1s linear;
 }
