@@ -15,7 +15,17 @@ const clock = document.getElementById("clock");
 
 const videoLayer=document.getElementById("videoLayer");
 const video=document.getElementById("video");
-video.onended=()=>videoLayer.style.display="none";
+
+video.onended = () => {
+    videoLayer.style.display = "none";
+
+    // tell server video finished
+    socket.emit("stopVideo");
+
+    // instantly restore layout locally (no wait for sync)
+    document.body.classList.remove("video-mode");
+};
+
 
 /* ================= QR ================= */
 

@@ -191,3 +191,23 @@ body.video-mode #readMask,
 body.video-mode #focusMask{
     display:none;
 }
+
+/* ===== CLEAN VIDEO MODE (NO DECORATIONS) ===== */
+
+body.video-mode #logoLayer{
+    display:none !important;
+}
+
+body.video-mode #readMask,
+body.video-mode #focusMask{
+    display:none !important;
+}
+
+body.video-mode .header{
+    opacity:0;          /* hide university banner during video */
+    pointer-events:none;
+}
+
+body.video-mode #qrLayer{
+    z-index:70;         /* QR still allowed above video if used */
+}
