@@ -1,6 +1,7 @@
 /* ================= ADMIN AUTH ================= */
 
 let serverOffset = 0;
+let currentPaused = false;
 
 const params = new URLSearchParams(location.search);
 const isAdmin = params.get("admin") === "fest123";
@@ -18,19 +19,9 @@ const video=document.getElementById("video");
 
 video.onended = () => {
     videoLayer.style.display = "none";
-
-    // tell server video finished
     socket.emit("stopVideo");
-
-    // instantly restore layout locally (no wait for sync)
     document.body.classList.remove("video-mode");
 };
-
-
-/* ================= QR ================= */
-
-const qrLayer = document.getElementById("qrLayer");
-let qrVisible = false;
 
 /* ================= REAL TIMER ENGINE ================= */
 
@@ -46,6 +37,8 @@ if(state.notStarted){
     return;
 }
 
+currentPaused = state.paused === true;
+
 /* ===== FIXED REAL TIME SYNC ===== */
 serverOffset = Date.now() - (state.endTime - state.remaining);
 serverRemaining = state.remaining;
@@ -56,13 +49,11 @@ if(state.video !== lastVideoState){
 
     lastVideoState = state.video;
 
-    /* ===== LAYOUT MODE SWITCH (ADDED) ===== */
     if(state.video){
         document.body.classList.add("video-mode");
     }else{
         document.body.classList.remove("video-mode");
     }
-    /* ===================================== */
 
     if(state.video){
         videoLayer.style.display = "flex";
@@ -84,9 +75,15 @@ if(state.video !== lastVideoState){
 
 function renderClock(){
 
-/* ===== TRUE SERVER TIME ===== */
-const serverNow = Date.now() - serverOffset;
-let live = (syncMoment + serverRemaining) - serverNow;
+let live;
+
+if(currentPaused){
+    live = serverRemaining;
+}else{
+    const serverNow = Date.now() - serverOffset;
+    live = (syncMoment + serverRemaining) - serverNow;
+}
+
 if(live < 0) live = 0;
 
 let s=Math.floor(live/1000);
@@ -186,14 +183,18 @@ document.addEventListener("keydown",(e)=>{
 
 if(!isAdmin) return;
 
-if(e.key==="r") socket.emit("reset");
+/* RESET SAFETY */
+if(e.key==="R" && e.shiftKey){
+    if(confirm("Reset the 36 hour event?")){
+        socket.emit("reset");
+    }
+}
+
 if(e.key==="v") socket.emit("playVideo");
 if(e.key==="s") socket.emit("stopVideo");
 
-if(e.key==="q"){
-    qrVisible = !qrVisible;
-    qrLayer.style.display = qrVisible ? "flex" : "none";
-}
+/* PAUSE / RESUME */
+if(e.key==="p") socket.emit("togglePause");
 
 if(e.key==="f"){
     if(!document.fullscreenElement){

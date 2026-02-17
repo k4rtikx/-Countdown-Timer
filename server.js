@@ -40,7 +40,12 @@ const io = new Server(server);
 /* ================= PERSISTENT TIMER ================= */
 
 const DURATION = 36 * 60 * 60 * 1000;
-let state = { video:false };
+
+let state = {
+    video:false,
+    paused:false,
+    remaining:null
+};
 
 /* ---------- GET START TIME ---------- */
 async function getStart(){
@@ -66,17 +71,23 @@ async function buildSyncState() {
     const eventStart = await getStart();
 
     if (!eventStart) {
-        return { notStarted:true, video: state.video };
+        return { notStarted:true, video: state.video, paused: state.paused };
     }
 
-    const endTime = Number(eventStart) + DURATION;
-    let remaining = endTime - Date.now();
-    if (remaining < 0) remaining = 0;
+    let remaining;
+
+    if(state.paused && state.remaining !== null){
+        remaining = state.remaining;
+    }else{
+        const endTime = Number(eventStart) + DURATION;
+        remaining = endTime - Date.now();
+        if (remaining < 0) remaining = 0;
+    }
 
     return {
-        endTime,
+        endTime: Number(eventStart) + DURATION,
         remaining,
-        paused:false,
+        paused: state.paused,
         video: state.video
     };
 }
@@ -95,6 +106,9 @@ io.on("connection", async (socket) => {
         if(deny()) return;
 
         const now = Date.now();
+        state.paused = false;
+        state.remaining = null;
+
         await setStart(now);
 
         console.log("EVENT STARTED:", new Date(now));
@@ -114,6 +128,26 @@ io.on("connection", async (socket) => {
         state.video = false;
         io.emit("sync", await buildSyncState());
     });
+
+    /* ===== PAUSE / RESUME TIMER ===== */
+    socket.on("togglePause", async () => {
+        if(deny()) return;
+
+        if(!state.paused){
+            const sync = await buildSyncState();
+            state.remaining = sync.remaining;
+            state.paused = true;
+            console.log("TIMER PAUSED");
+        }else{
+            const now = Date.now();
+            await setStart(now - (DURATION - state.remaining));
+            state.paused = false;
+            state.remaining = null;
+            console.log("TIMER RESUMED");
+        }
+
+        io.emit("sync", await buildSyncState());
+    });
 });
 
 /* ================= START ================= */
@@ -121,5 +155,5 @@ const PORT = process.env.PORT || 3000;
 
 server.listen(PORT,"0.0.0.0",async ()=>{
     console.log("SERVER RUNNING",PORT);
-    initRedis(); // connect AFTER server is live
+    initRedis();
 });
