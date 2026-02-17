@@ -2,7 +2,7 @@
 
 body{
     margin:0;
-    background:#ffffff; /* changed */
+    background:#ffffff;
     overflow:hidden;
     font-family:Arial, Helvetica, sans-serif;
 }
@@ -35,34 +35,26 @@ body{
 
 #clock{
     position:relative;
-    color:black; /* changed */
+    color:black;
     font-size:170px;
     font-weight:bold;
 
-    /* replaced heavy glow for white bg */
     text-shadow:
         0 0 2px #000,
         0 0 4px #000,
         0 0 10px rgba(0,0,0,0.35),
         0 0 20px rgba(0,0,0,0.25);
-
 }
 
-
-/* hard edge inverted */
 #clock::before{
     content: attr(data-time);
     position:absolute;
     inset:0;
     color:transparent;
-
     -webkit-text-stroke: 6px black;
     opacity:0.35;
-
     z-index:-1;
 }
-
-
 
 /* ================= LOGO FLOW ================= */
 
@@ -80,16 +72,12 @@ body{
     background-size:contain;
     background-repeat:no-repeat;
     background-position:center;
-
     opacity:0.95;
-
-    /* adjusted for light background */
     filter:
         brightness(0.9)
         contrast(1.05)
         drop-shadow(0 0 6px rgba(0,0,0,0.15));
 }
-
 
 /* ================= MASKS ================= */
 
@@ -98,14 +86,12 @@ body{
     inset:0;
     z-index:10;
     pointer-events:none;
-
     background:
     radial-gradient(circle at center,
         rgba(255,255,255,0) 320px,
         rgba(255,255,255,0.45) 750px,
         rgba(255,255,255,0.85) 1400px);
 }
-
 
 #focusMask{
     position:fixed;
@@ -115,13 +101,12 @@ body{
     box-shadow:inset 0 0 180px rgba(255,255,255,0.6);
 }
 
-
 /* ================= VIDEO ================= */
 
 #videoLayer{
     position:fixed;
     inset:0;
-    background:black; /* keep black for video contrast */
+    background:black;
     display:none;
     justify-content:center;
     align-items:center;
@@ -149,24 +134,89 @@ body{
     display:none;
     justify-content:center;
     align-items:center;
-
-    /* darker so QR readable on white */
     background:rgba(0,0,0,0.82);
-
     z-index:45;
     backface-visibility:hidden;
     transform:translateZ(0);
 }
+
 #timerMask{
     position:fixed;
     pointer-events:none;
     z-index:14;
     background:white;
-    border-radius:999px;   /* perfect capsule */
+    border-radius:999px;
     transition: all 0.1s linear;
 }
 
 /* ===== TIMER OCCLUSION STRIP ===== */
 #timerOcclusion{
+    display:none;
+}
+
+
+/* ========================================================= */
+/* ====================== LAYOUT ENGINE ===================== */
+/* ========================================================= */
+
+#screenLayout{
+    position:fixed;
+    inset:0;
+    display:flex;
+    flex-direction:row;
+}
+
+/* default: timer fullscreen */
+#timerContainer{
+    position:relative;
+    width:100%;
+    height:100%;
+    transition:all .5s ease;
+}
+
+#videoContainer{
+    position:relative;
+    width:0%;
+    height:100%;
+    overflow:hidden;
+    transition:all .5s ease;
+}
+
+/* ===== VIDEO MODE ACTIVE ===== */
+
+body.video-mode #timerContainer{
+    width:28%;
+    min-width:320px;
+    background:#000;
+    z-index:60;
+}
+
+body.video-mode #videoContainer{
+    width:72%;
+}
+
+/* video fills its panel */
+body.video-mode #videoLayer{
+    position:absolute;
+    inset:0;
+    display:flex !important;
+}
+
+/* prevent fullscreen timer locking */
+body.video-mode .timer{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%) scale(.45);
+}
+
+/* shrink masks with timer */
+body.video-mode #timerMask{
+    position:absolute;
+}
+
+body.video-mode #readMask,
+body.video-mode #focusMask,
+body.video-mode #logoLayer{
     display:none;
 }

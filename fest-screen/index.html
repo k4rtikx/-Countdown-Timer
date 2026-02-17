@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>Fest Screen</title>
 <link rel="stylesheet" href="style.css?v=2">
-
 </head>
 
 <body>
@@ -18,23 +17,37 @@
 <div id="readMask"></div>
 <div id="focusMask"></div>
 
-<div class="timer">
-    <span id="clock">36:00:00</span>
+<!-- ===== NEW LAYOUT WRAPPER ===== -->
+<div id="screenLayout">
+
+    <!-- TIMER SIDE / FULL -->
+    <div id="timerContainer">
+
+        <div class="timer">
+            <span id="clock">36:00:00</span>
+        </div>
+
+        <div id="timerOcclusion"></div>
+        <div id="timerMask"></div>
+
+    </div>
+
+    <!-- VIDEO SIDE / FULL -->
+    <div id="videoContainer">
+
+        <!-- QR ABOVE VIDEO -->
+        <div id="qrLayer">
+            <img id="qrImage" src="assets/qr.png">
+        </div>
+
+        <div id="videoLayer">
+            <video id="video" src="assets/videos/vid.mp4" muted playsinline></video>
+        </div>
+
+    </div>
+
 </div>
-<div id="timerOcclusion"></div>
-
-<div id="timerMask"></div>
-
-
-<!-- QR ABOVE VIDEO -->
-<div id="qrLayer">
-    <img id="qrImage" src="assets/qr.png">
-</div>
-
-<div id="videoLayer">
-    <video id="video" src="assets/videos/vid.mp4" muted playsinline></video>
-
-</div>
+<!-- ===== END WRAPPER ===== -->
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="script.js"></script>

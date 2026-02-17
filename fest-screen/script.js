@@ -46,6 +46,14 @@ if(state.video !== lastVideoState){
 
     lastVideoState = state.video;
 
+    /* ===== LAYOUT MODE SWITCH (ADDED) ===== */
+    if(state.video){
+        document.body.classList.add("video-mode");
+    }else{
+        document.body.classList.remove("video-mode");
+    }
+    /* ===================================== */
+
     if(state.video){
         videoLayer.style.display = "flex";
         video.currentTime = 0;
