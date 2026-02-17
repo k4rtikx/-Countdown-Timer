@@ -6,19 +6,28 @@ const http = require("http");
 const { Server } = require("socket.io");
 const path = require("path");
 
-/* ===== REDIS ===== */
-const { Redis } = require("@upstash/redis");
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN,
-});
+/* ===== REDIS (LAZY CONNECT) ===== */
+let redis = null;
+
+async function initRedis(){
+    try{
+        const { Redis } = require("@upstash/redis");
+        redis = new Redis({
+            url: process.env.UPSTASH_REDIS_REST_URL,
+            token: process.env.UPSTASH_REDIS_REST_TOKEN,
+        });
+        console.log("Redis connected");
+    }catch(e){
+        console.log("Redis unavailable, running without persistence");
+    }
+}
 
 const app = express();
 
-/* ---------- FAST HEALTH CHECK (prevents long loading page) ---------- */
+/* ---------- FAST HEALTH CHECK ---------- */
 app.get("/health", (req,res)=>res.status(200).send("OK"));
 
-/* ---------- ROOT QUICK RESPONSE (Render probe hits / ) ---------- */
+/* ---------- ROOT QUICK RESPONSE ---------- */
 app.get("/", (req,res,next)=>next());
 
 /* ---------- STATIC ---------- */
@@ -35,15 +44,17 @@ let state = { video:false };
 
 /* ---------- GET START TIME ---------- */
 async function getStart(){
+    if(!redis) return null;
     try {
         return await redis.get("eventStart");
     } catch {
-        return null; // don't block boot if redis cold
+        return null;
     }
 }
 
 /* ---------- SET START TIME ---------- */
 async function setStart(ts){
+    if(!redis) return;
     try {
         await redis.set("eventStart", ts);
     } catch {}
@@ -107,4 +118,8 @@ io.on("connection", async (socket) => {
 
 /* ================= START ================= */
 const PORT = process.env.PORT || 3000;
-server.listen(PORT,"0.0.0.0",()=>console.log("SERVER RUNNING",PORT));
+
+server.listen(PORT,"0.0.0.0",async ()=>{
+    console.log("SERVER RUNNING",PORT);
+    initRedis(); // connect AFTER server is live
+});
