@@ -85,6 +85,7 @@ async function buildSyncState() {
     }
 
     return {
+        startTime: Number(eventStart),   // <-- ADDED (important)
         endTime: Number(eventStart) + DURATION,
         remaining,
         paused: state.paused,

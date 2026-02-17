@@ -1,7 +1,6 @@
 /* ================= ADMIN AUTH ================= */
 
-let serverOffset = 0;
-let currentPaused = false;
+let startTime = null;
 
 const params = new URLSearchParams(location.search);
 const isAdmin = params.get("admin") === "fest123";
@@ -11,6 +10,7 @@ auth: { admin: params.get("admin") }
 });
 
 const clock = document.getElementById("clock");
+const dayLabel = document.getElementById("dayLabel");
 
 /* ================= VIDEO ================= */
 
@@ -25,24 +25,18 @@ video.onended = () => {
 
 /* ================= REAL TIMER ENGINE ================= */
 
-let serverRemaining = 0;
-let syncMoment = 0;
 let lastVideoState = false;
 
 socket.on("sync", (state) => {
 
 /* event not started yet */
 if(state.notStarted){
-    clock.textContent = "09:00:00";
+    clock.textContent = "07:00:00";
+    if(dayLabel) dayLabel.textContent = "DAY 1";
     return;
 }
 
-currentPaused = state.paused === true;
-
-/* ===== FIXED REAL TIME SYNC ===== */
-serverOffset = Date.now() - (state.endTime - state.remaining);
-serverRemaining = state.remaining;
-syncMoment = Date.now();
+startTime = state.startTime;
 
 /* VIDEO CONTROL SAFE */
 if(state.video !== lastVideoState){
@@ -75,13 +69,27 @@ if(state.video !== lastVideoState){
 
 function renderClock(){
 
-let live;
+let live = 0;
 
-if(currentPaused){
-    live = serverRemaining;
-}else{
-    const serverNow = Date.now() - serverOffset;
-    live = (syncMoment + serverRemaining) - serverNow;
+if(startTime){
+
+    const DAY1 = 7 * 60 * 60 * 1000;
+    const DAY23 = 31 * 60 * 60 * 1000;
+    const TOTAL = DAY1 + DAY23;
+
+    const elapsed = Date.now() - startTime;
+    live = TOTAL - elapsed;
+
+    if(elapsed < DAY1){
+        if(dayLabel) dayLabel.textContent = "DAY 1";
+    }
+    else if(elapsed < TOTAL){
+        if(dayLabel) dayLabel.textContent = "DAY 2 & DAY 3";
+    }
+    else{
+        if(dayLabel) dayLabel.textContent = "EVENT OVER";
+        live = 0;
+    }
 }
 
 if(live < 0) live = 0;
@@ -185,16 +193,13 @@ if(!isAdmin) return;
 
 /* RESET SAFETY */
 if(e.key==="R" && e.shiftKey){
-    if(confirm("Reset the 36 hour event?")){
+    if(confirm("Start the event timer?")){
         socket.emit("reset");
     }
 }
 
 if(e.key==="v") socket.emit("playVideo");
 if(e.key==="s") socket.emit("stopVideo");
-
-/* PAUSE / RESUME */
-if(e.key==="p") socket.emit("togglePause");
 
 if(e.key==="f"){
     if(!document.fullscreenElement){
