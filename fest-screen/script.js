@@ -236,8 +236,8 @@ window.addEventListener("resize",updateDayMask);
 
 const rect = clock.getBoundingClientRect();
 
-const padX = 18;
-const padY = 10;
+const padX = 10;
+const padY = 4;
 
 mask.style.left = (rect.left - padX) + "px";
 mask.style.top = (rect.top - padY) + "px";
