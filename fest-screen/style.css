@@ -15,7 +15,9 @@ body{
     width:100%;
     display:flex;
     justify-content:center;
+    align-items:center;
     z-index:20;
+    pointer-events:none;
 }
 
 .header img{
@@ -23,8 +25,26 @@ body{
     opacity:0.9;
 }
 
-/* ===== HEADER CLEAN ZONE (NEW FIX) ===== */
-/* hides moving sponsor logos behind header */
+/* ===== NEW SIDE LOGOS ===== */
+
+.sideLogo{
+    position:fixed;
+    top:35px;
+    height:110px;
+    z-index:19;                 /* BELOW header, ABOVE sponsors */
+    pointer-events:none;
+}
+
+#leftLogo{
+    left:40px;
+}
+
+#rightLogo{
+    right:40px;
+}
+
+/* ===== HEADER CLEAN ZONE ===== */
+/* hides moving sponsor logos AND side logos when crossing */
 
 #headerCleanZone{
     position:fixed;
@@ -156,14 +176,11 @@ body{
     transition: all 0.1s linear;
 }
 
-/* ===== TIMER OCCLUSION STRIP ===== */
 #timerOcclusion{
     display:none;
 }
 
-/* ========================================================= */
-/* ============ VIDEO MODE (SMALL TIMER OVERLAY) ============ */
-/* ========================================================= */
+/* ================= VIDEO MODE ================= */
 
 body.video-mode #videoLayer{
     display:flex !important;
@@ -185,21 +202,6 @@ body.video-mode #clock{
 body.video-mode #timerMask{
     z-index:59;
 }
-
-body.video-mode #logoLayer{
-    z-index:55;
-}
-
-body.video-mode .header{
-    z-index:65;
-}
-
-body.video-mode #readMask,
-body.video-mode #focusMask{
-    display:none;
-}
-
-/* ===== CLEAN VIDEO MODE ===== */
 
 body.video-mode #logoLayer{
     display:none !important;
