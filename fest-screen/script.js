@@ -114,18 +114,21 @@ renderClock();
 
 /* ================= LOGO FLOW ================= */
 
-const logos=[
-"assets/logos/1.png","assets/logos/2.png","assets/logos/3.png","assets/logos/4.png",
-"assets/logos/5.png","assets/logos/6.png","assets/logos/7.png","assets/logos/8.png"
-];
+/* ================= LOGO LIST AUTO LOAD ================= */
+
+const logos = [];
+for(let i=1;i<=28;i++){
+    logos.push(`assets/logos/${i}.png`);
+}
+
 
 const layer = document.getElementById("logoLayer");
 
 const SPEED = 40;
-const LANES = 12;
+const LANES = 16;
 const GAP_Y = 70;
 const START_Y = 120;
-const SLOT_WIDTH = 300;
+const SLOT_WIDTH = 240;
 
 let lanes = [];
 let lastTime = performance.now();
