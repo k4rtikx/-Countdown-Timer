@@ -1,7 +1,7 @@
 /* ================= ADMIN AUTH ================= */
 
 let startTime = null;
-let synced = false; // IMPORTANT: prevents fake timer before sync
+let synced = false;
 
 const params = new URLSearchParams(location.search);
 const isAdmin = params.get("admin") === "fest123";
@@ -30,7 +30,6 @@ let lastVideoState = false;
 
 socket.on("sync", (state) => {
 
-    /* event not started yet */
     if(state.notStarted){
         synced = true;
         startTime = null;
@@ -74,36 +73,26 @@ socket.on("sync", (state) => {
 
 function renderClock(){
 
-    /* WAIT FOR SERVER — prevents wrong start numbers */
     if(!synced){
         requestAnimationFrame(renderClock);
         return;
     }
 
+    const DAY1_DURATION = 7 * 60 * 60 * 1000;
+
     let live = 0;
 
     if(startTime){
-
-        const DAY1 = 7 * 60 * 60 * 1000;
-        const DAY23 = 31 * 60 * 60 * 1000;
-        const TOTAL = DAY1 + DAY23;
-
         const elapsed = Date.now() - startTime;
-        live = TOTAL - elapsed;
+        live = DAY1_DURATION - elapsed;
 
-        if(elapsed < DAY1){
-            if(dayLabel) dayLabel.textContent = "DAY 1";
-        }
-        else if(elapsed < TOTAL){
-            if(dayLabel) dayLabel.textContent = "DAY 2 & DAY 3";
-        }
-        else{
-            if(dayLabel) dayLabel.textContent = "EVENT OVER";
+        if(dayLabel) dayLabel.textContent = "DAY 1";
+
+        /* HARD STOP AFTER 7 HOURS */
+        if(live <= 0){
             live = 0;
         }
     }
-
-    if(live < 0) live = 0;
 
     let s=Math.floor(live/1000);
     let h=Math.floor(s/3600);
@@ -202,7 +191,6 @@ document.addEventListener("keydown",(e)=>{
 
 if(!isAdmin) return;
 
-/* RESET SAFETY */
 if(e.key==="R" && e.shiftKey){
     if(confirm("Start the event timer?")){
         socket.emit("reset");
