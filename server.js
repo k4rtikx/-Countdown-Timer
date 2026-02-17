@@ -39,7 +39,7 @@ const io = new Server(server);
 
 /* ================= PERSISTENT TIMER ================= */
 
-const DURATION = 36 * 60 * 60 * 1000;
+const DURATION = 9 * 60 * 60 * 1000;
 
 let state = {
     video:false,

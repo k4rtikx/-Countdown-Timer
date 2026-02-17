@@ -33,7 +33,7 @@ socket.on("sync", (state) => {
 
 /* event not started yet */
 if(state.notStarted){
-    clock.textContent = "36:00:00";
+    clock.textContent = "09:00:00";
     return;
 }
 
