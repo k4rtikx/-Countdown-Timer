@@ -30,10 +30,13 @@ body{
 .sideLogo{
     position:fixed;
     top:35px;
-    height:110px;
-    z-index:19;                 /* BELOW header, ABOVE sponsors */
+    height:70px;
+    width:auto;
+    max-width:260px;   /* prevents ultra wide logos */
+    z-index:19;
     pointer-events:none;
 }
+
 
 #leftLogo{
     left:40px;
