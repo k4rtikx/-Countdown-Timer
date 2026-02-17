@@ -151,13 +151,11 @@ body{
 /* ============ VIDEO MODE (SMALL TIMER OVERLAY) ============ */
 /* ========================================================= */
 
-/* video fullscreen */
 body.video-mode #videoLayer{
     display:flex !important;
     z-index:40;
 }
 
-/* small timer top-right */
 body.video-mode .timer{
     top:30px;
     right:40px;
@@ -166,33 +164,28 @@ body.video-mode .timer{
     z-index:60;
 }
 
-/* smaller digits */
 body.video-mode #clock{
     font-size:65px;
 }
 
-/* mask follows timer and hides logos */
 body.video-mode #timerMask{
     z-index:59;
 }
 
-/* logos stay under mask but above video */
 body.video-mode #logoLayer{
     z-index:55;
 }
 
-/* keep header visible */
 body.video-mode .header{
     z-index:65;
 }
 
-/* disable big reading glow when video plays */
 body.video-mode #readMask,
 body.video-mode #focusMask{
     display:none;
 }
 
-/* ===== CLEAN VIDEO MODE (NO DECORATIONS) ===== */
+/* ===== CLEAN VIDEO MODE ===== */
 
 body.video-mode #logoLayer{
     display:none !important;
@@ -204,23 +197,30 @@ body.video-mode #focusMask{
 }
 
 body.video-mode .header{
-    opacity:0;          /* hide university banner during video */
+    opacity:0;
     pointer-events:none;
 }
 
 body.video-mode #qrLayer{
-    z-index:70;         /* QR still allowed above video if used */
+    z-index:70;
 }
+
+/* ===== DAY LABEL (FIXED) ===== */
 
 #dayLabel{
     position:absolute;
-    top:-80px;
+    top:-42px;
     left:50%;
     transform:translateX(-50%);
-    font-size:60px;
+    font-size:36px;
     font-weight:900;
-    letter-spacing:6px;
+    letter-spacing:4px;
     color:black;
-    text-shadow:0 0 8px rgba(0,0,0,0.25);
+    text-shadow:0 0 6px rgba(0,0,0,0.25);
     pointer-events:none;
+}
+
+/* hide day text during video */
+body.video-mode #dayLabel{
+    display:none !important;
 }

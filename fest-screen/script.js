@@ -1,6 +1,7 @@
 /* ================= ADMIN AUTH ================= */
 
 let startTime = null;
+let synced = false; // IMPORTANT: prevents fake timer before sync
 
 const params = new URLSearchParams(location.search);
 const isAdmin = params.get("admin") === "fest123";
@@ -29,85 +30,95 @@ let lastVideoState = false;
 
 socket.on("sync", (state) => {
 
-/* event not started yet */
-if(state.notStarted){
-    clock.textContent = "07:00:00";
-    if(dayLabel) dayLabel.textContent = "DAY 1";
-    return;
-}
-
-startTime = state.startTime;
-
-/* VIDEO CONTROL SAFE */
-if(state.video !== lastVideoState){
-
-    lastVideoState = state.video;
-
-    if(state.video){
-        document.body.classList.add("video-mode");
-    }else{
-        document.body.classList.remove("video-mode");
+    /* event not started yet */
+    if(state.notStarted){
+        synced = true;
+        startTime = null;
+        clock.textContent = "07:00:00";
+        if(dayLabel) dayLabel.textContent = "DAY 1";
+        return;
     }
 
-    if(state.video){
-        videoLayer.style.display = "flex";
-        video.currentTime = 0;
+    synced = true;
+    startTime = state.startTime;
 
-        video.muted = false;
-        video.play().catch(() => {
-            video.muted = true;
-            video.play();
-        });
+    /* VIDEO CONTROL SAFE */
+    if(state.video !== lastVideoState){
 
-    }else{
-        video.pause();
-        videoLayer.style.display = "none";
+        lastVideoState = state.video;
+
+        if(state.video){
+            document.body.classList.add("video-mode");
+        }else{
+            document.body.classList.remove("video-mode");
+        }
+
+        if(state.video){
+            videoLayer.style.display = "flex";
+            video.currentTime = 0;
+
+            video.muted = false;
+            video.play().catch(() => {
+                video.muted = true;
+                video.play();
+            });
+
+        }else{
+            video.pause();
+            videoLayer.style.display = "none";
+        }
     }
-}
-
 });
+
+/* ================= CLOCK ================= */
 
 function renderClock(){
 
-let live = 0;
-
-if(startTime){
-
-    const DAY1 = 7 * 60 * 60 * 1000;
-    const DAY23 = 31 * 60 * 60 * 1000;
-    const TOTAL = DAY1 + DAY23;
-
-    const elapsed = Date.now() - startTime;
-    live = TOTAL - elapsed;
-
-    if(elapsed < DAY1){
-        if(dayLabel) dayLabel.textContent = "DAY 1";
+    /* WAIT FOR SERVER — prevents wrong start numbers */
+    if(!synced){
+        requestAnimationFrame(renderClock);
+        return;
     }
-    else if(elapsed < TOTAL){
-        if(dayLabel) dayLabel.textContent = "DAY 2 & DAY 3";
+
+    let live = 0;
+
+    if(startTime){
+
+        const DAY1 = 7 * 60 * 60 * 1000;
+        const DAY23 = 31 * 60 * 60 * 1000;
+        const TOTAL = DAY1 + DAY23;
+
+        const elapsed = Date.now() - startTime;
+        live = TOTAL - elapsed;
+
+        if(elapsed < DAY1){
+            if(dayLabel) dayLabel.textContent = "DAY 1";
+        }
+        else if(elapsed < TOTAL){
+            if(dayLabel) dayLabel.textContent = "DAY 2 & DAY 3";
+        }
+        else{
+            if(dayLabel) dayLabel.textContent = "EVENT OVER";
+            live = 0;
+        }
     }
-    else{
-        if(dayLabel) dayLabel.textContent = "EVENT OVER";
-        live = 0;
-    }
-}
 
-if(live < 0) live = 0;
+    if(live < 0) live = 0;
 
-let s=Math.floor(live/1000);
-let h=Math.floor(s/3600);
-let m=Math.floor((s%3600)/60);
-let sec=s%60;
+    let s=Math.floor(live/1000);
+    let h=Math.floor(s/3600);
+    let m=Math.floor((s%3600)/60);
+    let sec=s%60;
 
-const text =
-    String(h).padStart(2,'0')+":"+
-    String(m).padStart(2,'0')+":"+
-    String(sec).padStart(2,'0');
+    const text =
+        String(h).padStart(2,'0')+":"+
+        String(m).padStart(2,'0')+":"+
+        String(sec).padStart(2,'0');
 
-clock.textContent = text;
-clock.setAttribute("data-time", text);
+    clock.textContent = text;
+    clock.setAttribute("data-time", text);
 
-requestAnimationFrame(renderClock);
+    requestAnimationFrame(renderClock);
 }
 
 renderClock();
