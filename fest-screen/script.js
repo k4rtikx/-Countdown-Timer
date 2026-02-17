@@ -222,8 +222,8 @@ function updateDayMask(){
 
     const rect = dayLabel.getBoundingClientRect();
 
-    const padX = 40;
-    const padY = 22;
+    const padX = 18;
+    const padY = 12;
 
     dayMask.style.left = (rect.left - padX) + "px";
     dayMask.style.top = (rect.top - padY) + "px";
@@ -236,8 +236,8 @@ window.addEventListener("resize",updateDayMask);
 
 const rect = clock.getBoundingClientRect();
 
-const padX = 28;
-const padY = 18;
+const padX = 18;
+const padY = 10;
 
 mask.style.left = (rect.left - padX) + "px";
 mask.style.top = (rect.top - padY) + "px";

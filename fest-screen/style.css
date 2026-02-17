@@ -48,14 +48,17 @@ body{
 
 #headerCleanZone{
     position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:180px;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    width:780px;          /* adjust to your banner width */
+    height:170px;
     background:#ffffff;
     z-index:18;
     pointer-events:none;
+    border-radius:20px;
 }
+
 
 /* ================= TIMER ================= */
 
