@@ -7,12 +7,28 @@ body{
     font-family:Arial, Helvetica, sans-serif;
 }
 
-/* ================= HEADER ================= */
 
+/* ================= HEADER STRIP (REAL MASK) ================= */
+
+/* invisible collision layer — hides sponsors & DAY label */
+#headerShield{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:150px;
+    background:#ffffff;
+    z-index:18;
+    pointer-events:none;
+}
+
+/* visible banner */
 .header{
     position:fixed;
-    top:20px;
+    top:0;
+    left:0;
     width:100%;
+    height:150px;
     display:flex;
     justify-content:center;
     align-items:center;
@@ -22,48 +38,7 @@ body{
 
 .header img{
     height:120px;
-    opacity:0.9;
-}
-
-/* ===== NEW SIDE LOGOS ===== */
-
-.sideLogo{
-    position:fixed;
-    top:35px;
-    height:70px;
-    width:auto;
-    max-width:260px;   /* prevents ultra wide logos */
-    z-index:19;
-    pointer-events:none;
-}
-
-
-/* EC-COUNCIL wider */
-#leftLogo{
-    left:40px;
-    height:110px;
-    width:460px;       /* increase this */
-    object-fit:contain;
-}
-
-#rightLogo{
-    right:40px;
-}
-
-/* ===== HEADER CLEAN ZONE ===== */
-/* hides moving sponsor logos AND side logos when crossing */
-
-#headerCleanZone{
-    position:fixed;
-    top:20px;
-    left:50%;
-    transform:translateX(-50%);
-    width:640px;          /* adjust to your banner width */
-    height:120px;
-    background:#ffffff;
-    z-index:18;
-    pointer-events:none;
-    border-radius:20px;
+    opacity:0.95;
 }
 
 
@@ -100,6 +75,7 @@ body{
     z-index:-1;
 }
 
+
 /* ================= LOGO FLOW ================= */
 
 #logoLayer{
@@ -123,6 +99,7 @@ body{
         drop-shadow(0 0 6px rgba(0,0,0,0.15));
 }
 
+
 /* ================= MASKS ================= */
 
 #readMask{
@@ -145,6 +122,7 @@ body{
     box-shadow:inset 0 0 180px rgba(255,255,255,0.6);
 }
 
+
 /* ================= VIDEO ================= */
 
 #videoLayer{
@@ -163,6 +141,7 @@ body{
     object-fit:cover;
 }
 
+
 /* ================= QR OVERLAY ================= */
 
 #qrLayer{
@@ -177,6 +156,9 @@ body{
     transform:translateZ(0);
 }
 
+
+/* ================= TIMER MASK ================= */
+
 #timerMask{
     position:fixed;
     pointer-events:none;
@@ -189,6 +171,7 @@ body{
 #timerOcclusion{
     display:none;
 }
+
 
 /* ================= VIDEO MODE ================= */
 
@@ -227,15 +210,16 @@ body.video-mode .header{
     pointer-events:none;
 }
 
+body.video-mode #headerShield{
+    display:none;
+}
+
 body.video-mode #qrLayer{
     z-index:70;
 }
 
-body.video-mode #headerCleanZone{
-    display:none;
-}
 
-/* ===== DAY LABEL ===== */
+/* ================= DAY LABEL ================= */
 
 #dayLabel{
     position:absolute;
@@ -253,7 +237,10 @@ body.video-mode #headerCleanZone{
 body.video-mode #dayLabel{
     display:none !important;
 }
+
+
 /* ===== DAY LABEL PROTECTION ZONE ===== */
+
 #dayMask{
     position:fixed;
     pointer-events:none;

@@ -117,7 +117,7 @@ renderClock();
 /* ================= LOGO LIST AUTO LOAD ================= */
 
 const logos = [];
-for(let i=1;i<=28;i++){
+for(let i=1;i<=45;i++){
     logos.push(`assets/logos/${i}.png`);
 }
 
