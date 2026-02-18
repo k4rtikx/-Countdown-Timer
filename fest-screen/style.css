@@ -38,8 +38,12 @@ body{
 }
 
 
+/* EC-COUNCIL wider */
 #leftLogo{
     left:40px;
+    height:110px;
+    width:340px;       /* increase this */
+    object-fit:contain;
 }
 
 #rightLogo{
