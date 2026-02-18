@@ -127,7 +127,7 @@ const layer = document.getElementById("logoLayer");
 const SPEED = 40;
 const LANES = 16;
 const GAP_Y = 70;
-const START_Y = 120;
+const START_Y = 220;
 const SLOT_WIDTH = 240;
 
 let lanes = [];
