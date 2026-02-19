@@ -1,5 +1,5 @@
 /* ================= ADMIN KEY ================= */
-const ADMIN_KEY = process.env.ADMIN_KEY || "devkey";
+const ADMIN_KEY = process.env.ADMIN_KEY || "fest123";
 
 const express = require("express");
 const http = require("http");
@@ -23,55 +23,48 @@ async function initRedis(){
 }
 
 const app = express();
-
-/* ---------- FAST HEALTH CHECK ---------- */
 app.get("/health", (req,res)=>res.status(200).send("OK"));
-
-/* ---------- ROOT QUICK RESPONSE ---------- */
-app.get("/", (req,res,next)=>next());
-
-/* ---------- STATIC ---------- */
 app.use(express.static(path.join(__dirname, "fest-screen")));
 
-/* ================= SERVER ================= */
 const server = http.createServer(app);
 const io = new Server(server);
 
-/* ================= PERSISTENT TIMER ================= */
+/* ================= EVENT CONFIG ================= */
 
-const DURATION = 7 * 60 * 60 * 1000;
+const DURATION = 31 * 60 * 60 * 1000;   // ← DAY 2 & 3 = 31 HOURS
 
 let state = {
     video:false,
+    videoFile:"vid.mp4",
     paused:false,
     remaining:null
 };
 
-/* ---------- GET START TIME ---------- */
+/* ---------- REDIS START TIME ---------- */
 async function getStart(){
     if(!redis) return null;
-    try {
-        return await redis.get("eventStart");
-    } catch {
-        return null;
-    }
+    try { return await redis.get("eventStart"); }
+    catch { return null; }
 }
 
-/* ---------- SET START TIME ---------- */
 async function setStart(ts){
     if(!redis) return;
-    try {
-        await redis.set("eventStart", ts);
-    } catch {}
+    try { await redis.set("eventStart", ts); }
+    catch {}
 }
 
 /* ---------- BUILD STATE ---------- */
-async function buildSyncState() {
+async function buildSyncState(){
 
     const eventStart = await getStart();
 
-    if (!eventStart) {
-        return { notStarted:true, video: state.video, paused: state.paused };
+    if(!eventStart){
+        return { 
+            notStarted:true,
+            video:state.video,
+            videoFile:state.videoFile,
+            paused:state.paused
+        };
     }
 
     let remaining;
@@ -81,77 +74,88 @@ async function buildSyncState() {
     }else{
         const endTime = Number(eventStart) + DURATION;
         remaining = endTime - Date.now();
-        if (remaining < 0) remaining = 0;
+        if(remaining < 0) remaining = 0;
     }
 
     return {
-        startTime: Number(eventStart),   // <-- ADDED (important)
-        endTime: Number(eventStart) + DURATION,
+        startTime:Number(eventStart),
+        endTime:Number(eventStart)+DURATION,
         remaining,
-        paused: state.paused,
-        video: state.video
+        paused:state.paused,
+        video:state.video,
+        videoFile:state.videoFile
     };
 }
 
-/* ---------- SOCKET ---------- */
-io.on("connection", async (socket) => {
+/* ================= SOCKET ================= */
+
+io.on("connection", async (socket)=>{
 
     const isAdmin = socket.handshake.auth?.admin === ADMIN_KEY;
-    console.log("Connected:", socket.id, isAdmin?"ADMIN":"VIEW");
+    console.log("Connected:",socket.id,isAdmin?"ADMIN":"VIEW");
 
-    socket.emit("sync", await buildSyncState());
+    socket.emit("sync",await buildSyncState());
 
     function deny(){ if(!isAdmin) return true; }
 
-    socket.on("reset", async () => {
+    /* START TIMER */
+    socket.on("reset", async ()=>{
         if(deny()) return;
 
         const now = Date.now();
-        state.paused = false;
-        state.remaining = null;
+        state.paused=false;
+        state.remaining=null;
 
         await setStart(now);
+        console.log("EVENT STARTED:",new Date(now));
 
-        console.log("EVENT STARTED:", new Date(now));
-        io.emit("sync", await buildSyncState());
+        io.emit("sync",await buildSyncState());
     });
 
-    socket.on("forceSync", async ()=> socket.emit("sync", await buildSyncState()));
+    socket.on("forceSync", async ()=>{
+        socket.emit("sync",await buildSyncState());
+    });
 
-    socket.on("playVideo", async () => {
+    /* PLAY SPECIFIC VIDEO */
+    socket.on("playVideo", async (file)=>{
         if(deny()) return;
-        state.video = true;
-        io.emit("sync", await buildSyncState());
+
+        state.video=true;
+        state.videoFile=file || "vid.mp4";
+
+        console.log("PLAY VIDEO:",state.videoFile);
+        io.emit("sync",await buildSyncState());
     });
 
-    socket.on("stopVideo", async () => {
+    socket.on("stopVideo", async ()=>{
         if(deny()) return;
-        state.video = false;
-        io.emit("sync", await buildSyncState());
+        state.video=false;
+        io.emit("sync",await buildSyncState());
     });
 
-    /* ===== PAUSE / RESUME TIMER ===== */
-    socket.on("togglePause", async () => {
+    /* PAUSE TIMER */
+    socket.on("togglePause", async ()=>{
         if(deny()) return;
 
         if(!state.paused){
-            const sync = await buildSyncState();
-            state.remaining = sync.remaining;
-            state.paused = true;
+            const sync=await buildSyncState();
+            state.remaining=sync.remaining;
+            state.paused=true;
             console.log("TIMER PAUSED");
         }else{
-            const now = Date.now();
-            await setStart(now - (DURATION - state.remaining));
-            state.paused = false;
-            state.remaining = null;
+            const now=Date.now();
+            await setStart(now-(DURATION-state.remaining));
+            state.paused=false;
+            state.remaining=null;
             console.log("TIMER RESUMED");
         }
 
-        io.emit("sync", await buildSyncState());
+        io.emit("sync",await buildSyncState());
     });
 });
 
 /* ================= START ================= */
+
 const PORT = process.env.PORT || 3000;
 
 server.listen(PORT,"0.0.0.0",async ()=>{
