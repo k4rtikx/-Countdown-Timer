@@ -1,0 +1,22 @@
+{
+  "name": "ads",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "engines": {
+    "node": "18.x"
+  },
+  "dependencies": {
+    "@upstash/redis": "^1.36.2",
+    "cors": "^2.8.6",
+    "express": "^4.19.2",
+    "socket.io": "^4.8.3"
+  }
+}

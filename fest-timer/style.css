@@ -1,0 +1,632 @@
+/* =====================================================
+   ALLIANCE UNIVERSITY FEST TIMER
+   Theme: Gold + Midnight Navy
+   Stage: 1920 × 1080
+===================================================== */
+
+:root {
+    --gold-1: #fff4c2;
+    --gold-2: #f6c445;
+    --gold-3: #bd831e;
+    --gold-4: #ffe29a;
+    --navy: #071329;
+    --navy-light: #142746;
+    --white: #ffffff;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+body {
+    font-family: "Montserrat", Arial, Helvetica, sans-serif;
+    color: var(--white);
+    background: #071329 url("assets/logos/background.png")
+        center center / cover no-repeat;
+}
+
+/* Background overlay */
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+        radial-gradient(
+            ellipse at center,
+            rgba(255, 226, 154, 0.10) 0%,
+            rgba(7, 19, 41, 0.12) 48%,
+            rgba(0, 0, 0, 0.48) 100%
+        ),
+        linear-gradient(
+            to bottom,
+            rgba(3, 10, 25, 0.12),
+            rgba(3, 10, 25, 0.20)
+        );
+}
+
+/* =====================================================
+   STAGE
+===================================================== */
+
+#stage {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    width: 1920px;
+    height: 1080px;
+    transform: translate(-50%, -50%);
+    transform-origin: center center;
+    z-index: 5;
+    pointer-events: none;
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+#header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 320px;
+    text-align: center;
+    z-index: 20;
+}
+
+/* University logo */
+
+.logo-slot {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 900px;
+    height: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#mainLogo {
+    display: block;
+    max-width: 100%;
+    max-height: 180px;
+    width: auto;
+    height: 180px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 18px rgba(0, 0, 0, 0.5));
+}
+
+#logoFallback {
+    display: none;
+    font-family: "Cinzel", Georgia, serif;
+    font-size: 45px;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: 5px;
+    color: var(--gold-2);
+}
+
+/* Motto */
+
+#motto {
+    position: absolute;
+    top: 28px;
+    left: 55px;
+    text-align: left;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.55;
+    letter-spacing: 5px;
+    color: var(--white);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+}
+
+#motto span {
+    display: block;
+}
+
+#motto::after {
+    content: "";
+    display: block;
+    width: 110px;
+    height: 3px;
+    margin-top: 10px;
+    background: linear-gradient(
+        90deg,
+        var(--gold-2),
+        transparent
+    );
+}
+
+/* Event titles */
+
+#eventsRow {
+    position: absolute;
+    top: 200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1100px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    z-index: 21;
+}
+
+.event {
+    min-width: 0;
+    min-height: 58px;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: rgba(5, 15, 34, 0.88);
+    border: 1px solid rgba(246, 196, 69, 0.85);
+    border-radius: 8px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+.event b {
+    display: block;
+    font-family: "Cinzel", Georgia, serif;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--gold-2);
+}
+
+.event span {
+    display: block;
+    margin-top: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--white);
+}
+
+/* =====================================================
+   TIMER
+===================================================== */
+
+#timerBox {
+    position: absolute;
+    top: 340px;
+    left: 50%;
+    width: 1450px;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 25;
+}
+
+#dayLabel {
+    display: block;
+    width: fit-content;
+    margin: 0 auto 6px;
+    padding: 0 110px;
+    position: relative;
+    font-size: 52px;
+    font-weight: 900;
+    line-height: 1.3;
+    letter-spacing: 8px;
+    color: var(--gold-2);
+    text-shadow:
+        0 2px 12px rgba(0, 0, 0, 0.8),
+        0 0 30px rgba(246, 196, 69, 0.25);
+    white-space: nowrap;
+}
+
+#dayLabel::before,
+#dayLabel::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 82px;
+    height: 2px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--gold-2)
+    );
+}
+
+#dayLabel::before {
+    left: 0;
+}
+
+#dayLabel::after {
+    right: 0;
+    transform: scaleX(-1);
+}
+
+/* Countdown digits */
+
+#clock {
+    display: block;
+    margin: 0 auto;
+    font-size: 230px;
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: 4px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    background: linear-gradient(
+        180deg,
+        #fffef5 0%,
+        #ffe9a6 15%,
+        #ffd15c 35%,
+        #d99525 55%,
+        #ffe9a6 70%,
+        #ffd15c 85%,
+        #d99525 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-stroke: 2px rgba(160, 100, 10, 0.5);
+    filter:
+        drop-shadow(0 4px 2px rgba(0, 0, 0, 0.9))
+        drop-shadow(0 8px 16px rgba(0, 0, 0, 0.7))
+        drop-shadow(0 0 40px rgba(246, 196, 69, 0.3));
+}
+
+/* Hours / minutes / seconds */
+
+#units {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 45px;
+    margin-top: 8px;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 7px;
+    color: var(--gold-1);
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+#units i {
+    display: block;
+    width: 2px;
+    height: 22px;
+    background: var(--gold-2);
+    opacity: 0.8;
+}
+
+/* =====================================================
+   DIRECTOR AND FACULTY PANELS
+===================================================== */
+
+.panel {
+    position: absolute;
+    top: 295px;
+    z-index: 40;
+    padding: 20px;
+    background: linear-gradient(
+        145deg,
+        rgba(16, 35, 65, 0.97),
+        rgba(4, 12, 29, 0.98)
+    );
+    border: 2px solid var(--gold-2);
+    border-radius: 12px;
+    box-shadow:
+        0 0 0 1px rgba(255, 226, 154, 0.20),
+        0 0 25px rgba(246, 196, 69, 0.20),
+        0 15px 35px rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+        opacity 0.4s ease,
+        transform 0.5s ease,
+        visibility 0.4s ease;
+}
+
+.panel-title {
+    margin-bottom: 12px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    color: var(--gold-2);
+}
+
+/* Director panel */
+
+#directorPanel {
+    left: 45px;
+    width: 300px;
+    padding: 18px;
+    transform: translateX(-45px) scale(0.96);
+}
+
+.director-frame {
+    width: 100%;
+    height: 330px;
+    overflow: hidden;
+    border: 2px solid rgba(246, 196, 69, 0.85);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.director-frame img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+}
+
+#directorName {
+    margin-top: 12px;
+    text-align: center;
+    font-size: 21px;
+    font-weight: 800;
+    color: var(--white);
+}
+
+#directorName:empty {
+    display: none;
+}
+
+#directorCaption {
+    margin-top: 7px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.5;
+    letter-spacing: 1.5px;
+    color: var(--gold-1);
+}
+
+/* Faculty panel */
+
+#facultyPanel {
+    right: 40px;
+    width: 720px;
+    padding: 18px;
+    transform: translateX(45px) scale(0.96);
+}
+
+#facultyGrid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 12px 9px;
+    margin-top: 12px;
+}
+
+.fac {
+    min-width: 0;
+    text-align: center;
+}
+
+.fac .photo {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    border: 1px solid rgba(246, 196, 69, 0.85);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.fac img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+}
+
+.fac b {
+    display: block;
+    margin-top: 5px;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1.25;
+    color: var(--white);
+}
+
+.fac span {
+    display: block;
+    margin-top: 3px;
+    font-size: 9px;
+    line-height: 1.25;
+    color: var(--gold-1);
+}
+
+/* Popup states */
+
+body[data-popup="director"] #directorPanel,
+body[data-popup="faculty"] #facultyPanel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0) scale(1);
+}
+
+/* =====================================================
+   SPONSORS
+===================================================== */
+
+#sponsors {
+    display: none !important;
+}
+
+#sponsorTitle {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 15px;
+    padding: 0 95px;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 6px;
+    color: var(--gold-2);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+#sponsorTitle::before,
+#sponsorTitle::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 75px;
+    height: 1px;
+    background: var(--gold-3);
+}
+
+#sponsorTitle::before {
+    left: 0;
+}
+
+#sponsorTitle::after {
+    right: 0;
+}
+
+/* Sponsor logos row */
+
+#sponsorRow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+}
+
+.sponsor {
+    flex: 0 0 150px;
+    height: 65px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid rgba(246, 196, 69, 0.55);
+    border-radius: 5px;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
+}
+
+.sponsor img {
+    display: block;
+    max-width: 88%;
+    max-height: 80%;
+    object-fit: contain;
+}
+
+.sponsor em {
+    font-size: 18px;
+    font-weight: 800;
+    font-style: normal;
+    color: var(--navy);
+}
+
+/* Optional animated sponsor track */
+
+.sponsor-track {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    width: max-content;
+    animation: sponsorScroll 35s linear infinite;
+}
+
+@keyframes sponsorScroll {
+    from {
+        transform: translateX(100vw);
+    }
+
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+/* =====================================================
+   VIDEO MODE
+===================================================== */
+
+#videoLayer {
+    position: fixed;
+    inset: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background: #000;
+    z-index: 100;
+}
+
+#video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+body.video-mode #videoLayer {
+    display: flex !important;
+}
+
+body.video-mode::before {
+    display: none;
+}
+
+body.video-mode .hide-in-video {
+    display: none !important;
+}
+
+/* Keep the countdown visible over the video */
+
+body.video-mode #timerBox {
+    top: 25px;
+    left: auto;
+    right: 35px;
+    width: auto;
+    transform: none;
+    z-index: 120;
+}
+
+body.video-mode #dayLabel,
+body.video-mode #units {
+    display: none !important;
+}
+
+body.video-mode #clock {
+    margin: 0;
+    font-size: 65px;
+    line-height: 1.1;
+    -webkit-text-stroke: 0;
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.9));
+}
+
+body.video-mode .panel,
+body.video-mode #sponsors {
+    display: none !important;
+}
+
+/* =====================================================
+   RESPONSIVE SAFETY
+   Main layout remains a 1920 × 1080 scaled stage.
+===================================================== */
+
+@media (max-width: 900px) {
+    #clock {
+        font-size: 150px;
+    }
+
+    #facultyPanel {
+        width: 660px;
+    }
+
+    #directorPanel {
+        width: 260px;
+    }
+}
