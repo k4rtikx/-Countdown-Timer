@@ -39,7 +39,8 @@ const ALLOWED_VIDEOS = new Set([
 
 const ALLOWED_POPUPS = new Set([
     "director",
-    "faculty"
+    "faculty",
+    "both"
 ]);
 
 const REDIS_KEYS = {

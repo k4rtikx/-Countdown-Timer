@@ -387,18 +387,19 @@ body::before {
 
 #directorPanel {
     left: 45px;
-    width: 300px;
-    padding: 18px;
+    width: 400px;
+    padding: 22px;
     transform: translateX(-45px) scale(0.96);
 }
 
 .director-frame {
     width: 100%;
-    height: 330px;
+    height: 480px;
     overflow: hidden;
-    border: 2px solid rgba(246, 196, 69, 0.85);
-    border-radius: 8px;
+    border: 3px solid rgba(246, 196, 69, 0.9);
+    border-radius: 10px;
     background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 30px rgba(246, 196, 69, 0.2);
 }
 
 .director-frame img {
@@ -489,7 +490,9 @@ body::before {
 /* Popup states */
 
 body[data-popup="director"] #directorPanel,
-body[data-popup="faculty"] #facultyPanel {
+body[data-popup="faculty"] #facultyPanel,
+body[data-popup="both"] #directorPanel,
+body[data-popup="both"] #facultyPanel {
     opacity: 1;
     visibility: visible;
     transform: translateX(0) scale(1);

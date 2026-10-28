@@ -394,16 +394,25 @@ if (logoLayer) {
 
         element.className = "logo";
 
+        const src = logoSources[Math.floor(Math.random() * logoSources.length)];
+
         Object.assign(element.style, {
             position: "absolute",
             width: `${logoWidth}px`,
             height: `${logoHeight}px`,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            background: "#ffffff",
+            borderRadius: "10px",
+            padding: "6px 10px",
+            boxSizing: "border-box",
+            boxShadow: "0 3px 12px rgba(0,0,0,0.35), 0 0 0 1.5px rgba(246,196,69,0.45)",
+            backgroundImage: `url("${src}")`,
             backgroundSize: "contain",
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center",
-            backgroundImage:
-                `url("${logoSources[Math.floor(Math.random() * logoSources.length)]}")`,
-            opacity: "0.9",
+            opacity: "1",
             pointerEvents: "none",
             top: `${laneY}px`,
             left: "0"
@@ -599,13 +608,18 @@ document.addEventListener("keydown", (event) => {
             socket.emit("stopVideo");
             break;
 
+        /*
+           D — toggle BOTH director + faculty panels together.
+           Press once → both appear. Press again → both hide.
+        */
         case "d":
             socket.emit(
-                state?.popup === "director" ? "hidePopup" : "showPopup",
-                "director"
+                state?.popup === "both" ? "hidePopup" : "showPopup",
+                "both"
             );
             break;
 
+        /* M — faculty only (optional separate control) */
         case "m":
             socket.emit(
                 state?.popup === "faculty" ? "hidePopup" : "showPopup",
