@@ -110,8 +110,12 @@ body::before {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: transparent;
-    padding: 0;
+    background: rgba(50, 50, 60, 0.55);
+    padding: 12px 18px;
+    border-radius: 14px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     z-index: 22;
 }
 

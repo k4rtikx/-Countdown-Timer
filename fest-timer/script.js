@@ -377,9 +377,9 @@ if (logoLayer) {
     ];
 
     const logoSpeed = 40; // pixels per second
-    const logoWidth = 130;
-    const logoHeight = 70;
-    const slotWidth = 240;
+    const logoWidth = 220;
+    const logoHeight = 120;
+    const slotWidth = 300;
 
     let logoAnimationId = 0;
     let previousFrame = 0;
@@ -404,8 +404,8 @@ if (logoLayer) {
             justifyContent: "center",
             alignItems: "center",
             background: "#ffffff",
-            borderRadius: "10px",
-            padding: "6px 10px",
+            borderRadius: "14px",
+            padding: "10px 14px",
             boxSizing: "border-box",
             boxShadow: "0 3px 12px rgba(0,0,0,0.35), 0 0 0 1.5px rgba(246,196,69,0.45)",
             backgroundImage: `url("${src}")`,
@@ -431,8 +431,8 @@ if (logoLayer) {
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
 
-        const lanesCount = 2;
-        const laneGap = 75;
+        const lanesCount = 1;
+        const laneGap = 0;
 
         /*
            Position rows above the bottom sponsor area.
@@ -440,7 +440,7 @@ if (logoLayer) {
         */
         const firstLaneY = Math.max(
             150,
-            viewportHeight - 230
+            viewportHeight - 160
         );
 
         logoLanes = [];

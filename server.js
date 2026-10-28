@@ -27,7 +27,7 @@ const MODES = Object.freeze({
     },
     day23: {
         label: "DAY 2 & DAY 3",
-        hours: 31
+        hours: 25
     }
 });
 
