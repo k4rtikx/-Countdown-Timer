@@ -89,40 +89,36 @@ body::before {
 
 .logo-slot {
     position: absolute;
-    top: 10px;
+    top: 5px;
     left: 50%;
     transform: translateX(-50%);
-    width: 960px;
-    height: 200px;
+    width: 1060px;
+    height: 210px;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 22;
 }
 
-/* AU logo in a white rounded box */
+/* AU logo — no box, just the image */
 
 .au-logo-box {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #ffffff;
-    border-radius: 14px;
-    padding: 10px 28px;
-    box-shadow:
-        0 4px 24px rgba(0, 0, 0, 0.45),
-        0 0 0 2px rgba(246, 196, 69, 0.6);
-    height: 190px;
-    width: 820px;
+    background: transparent;
+    height: 210px;
+    width: 1040px;
 }
 
 #mainLogo {
     display: block;
     max-width: 100%;
-    max-height: 170px;
-    width: auto;
-    height: 170px;
+    max-height: 210px;
+    width: 1020px;
+    height: auto;
     object-fit: contain;
+    filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.6));
 }
 
 #logoFallback {
@@ -653,6 +649,43 @@ body.video-mode #clock {
 body.video-mode .panel,
 body.video-mode #sponsors {
     display: none !important;
+}
+
+/* =====================================================
+   POPUP MODE — timer moves to top-right corner
+   (same compact style as video mode)
+===================================================== */
+
+body[data-popup="both"] #timerBox,
+body[data-popup="director"] #timerBox,
+body[data-popup="faculty"] #timerBox {
+    top: 25px;
+    left: auto;
+    right: 35px;
+    width: auto;
+    transform: none;
+    z-index: 120;
+}
+
+body[data-popup="both"] #dayLabel,
+body[data-popup="director"] #dayLabel,
+body[data-popup="faculty"] #dayLabel,
+body[data-popup="both"] #units,
+body[data-popup="director"] #units,
+body[data-popup="faculty"] #units {
+    display: none !important;
+}
+
+body[data-popup="both"] #clock,
+body[data-popup="director"] #clock,
+body[data-popup="faculty"] #clock {
+    margin: 0;
+    font-size: 72px;
+    line-height: 1.1;
+    -webkit-text-stroke: 1px rgba(120, 70, 5, 0.6);
+    filter:
+        drop-shadow(0 3px 8px rgba(0, 0, 0, 1))
+        drop-shadow(0 0 20px rgba(246, 196, 69, 0.5));
 }
 
 /* =====================================================
