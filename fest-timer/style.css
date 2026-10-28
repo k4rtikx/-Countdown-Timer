@@ -100,6 +100,43 @@ body::before {
     z-index: 22;
 }
 
+/* Corner logos — left (Ab) and right (AO) */
+
+.corner-logo {
+    position: absolute;
+    top: 5px;
+    width: 200px;
+    height: 110px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 8px 14px;
+    box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.4),
+        0 0 0 2px rgba(246, 196, 69, 0.55);
+    z-index: 22;
+}
+
+.corner-logo--left {
+    left: 30px;
+}
+
+.corner-logo--right {
+    right: 30px;
+}
+
+.corner-logo img {
+    display: block;
+    max-width: 100%;
+    max-height: 90px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+
 /* AU logo — no box, just the image */
 
 .au-logo-box {
