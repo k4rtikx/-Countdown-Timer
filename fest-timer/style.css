@@ -80,33 +80,49 @@ body::before {
     top: 0;
     left: 0;
     width: 100%;
-    height: 320px;
+    height: 340px;
     text-align: center;
     z-index: 20;
 }
 
-/* University logo */
+/* University logo slot */
 
 .logo-slot {
     position: absolute;
     top: 10px;
     left: 50%;
     transform: translateX(-50%);
-    width: 900px;
-    height: 180px;
+    width: 960px;
+    height: 200px;
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 22;
+}
+
+/* AU logo in a white rounded box */
+
+.au-logo-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 10px 28px;
+    box-shadow:
+        0 4px 24px rgba(0, 0, 0, 0.45),
+        0 0 0 2px rgba(246, 196, 69, 0.6);
+    height: 190px;
+    width: 820px;
 }
 
 #mainLogo {
     display: block;
     max-width: 100%;
-    max-height: 180px;
+    max-height: 170px;
     width: auto;
-    height: 180px;
+    height: 170px;
     object-fit: contain;
-    filter: drop-shadow(0 4px 18px rgba(0, 0, 0, 0.5));
 }
 
 #logoFallback {
@@ -151,52 +167,75 @@ body::before {
     );
 }
 
-/* Event titles */
+/* Event logo row - white boxes below AU logo */
 
 #eventsRow {
     position: absolute;
-    top: 200px;
+    top: 215px;
     left: 50%;
     transform: translateX(-50%);
-    width: 1100px;
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 12px;
+    width: 1180px;
+    display: flex;
+    justify-content: center;
+    gap: 24px;
     z-index: 21;
 }
 
-.event {
-    min-width: 0;
-    min-height: 58px;
-    padding: 8px 10px;
+/* Each event logo in a white rounded box */
+
+.event-logo-box {
+    flex: 0 0 auto;
+    width: 340px;
+    min-height: 90px;
+    padding: 10px 16px 8px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-    background: rgba(5, 15, 34, 0.88);
-    border: 1px solid rgba(246, 196, 69, 0.85);
-    border-radius: 8px;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.4),
+        0 0 0 2px rgba(246, 196, 69, 0.55);
+    gap: 5px;
 }
 
-.event b {
+.event-logo-box img {
+    display: block;
+    max-width: 100%;
+    max-height: 55px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+.event-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #1a2a4a;
+    text-transform: uppercase;
+    line-height: 1.3;
+}
+
+/* iPragyan text-based box */
+
+.ipragyan-box {
+    background: #ffffff;
+}
+
+.ipragyan-text {
     display: block;
     font-family: "Cinzel", Georgia, serif;
-    font-size: 16px;
+    font-size: 30px;
     font-weight: 800;
-    line-height: 1.2;
-    color: var(--gold-2);
+    color: #1a2a4a;
+    letter-spacing: 2px;
+    line-height: 1.1;
 }
 
-.event span {
-    display: block;
-    margin-top: 3px;
-    font-size: 11px;
-    font-weight: 600;
-    line-height: 1.3;
-    color: var(--white);
-}
 
 /* =====================================================
    TIMER
@@ -204,7 +243,7 @@ body::before {
 
 #timerBox {
     position: absolute;
-    top: 340px;
+    top: 355px;
     left: 50%;
     width: 1450px;
     transform: translateX(-50%);
@@ -265,23 +304,24 @@ body::before {
     white-space: nowrap;
     background: linear-gradient(
         180deg,
-        #fffef5 0%,
-        #ffe9a6 15%,
-        #ffd15c 35%,
-        #d99525 55%,
-        #ffe9a6 70%,
-        #ffd15c 85%,
+        #ffffff 0%,
+        #ffe9a6 12%,
+        #ffd15c 30%,
+        #d99525 52%,
+        #ffe9a6 68%,
+        #ffd15c 82%,
         #d99525 100%
     );
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    -webkit-text-stroke: 2px rgba(160, 100, 10, 0.5);
+    -webkit-text-stroke: 3px rgba(120, 70, 5, 0.7);
     filter:
-        drop-shadow(0 4px 2px rgba(0, 0, 0, 0.9))
-        drop-shadow(0 8px 16px rgba(0, 0, 0, 0.7))
-        drop-shadow(0 0 40px rgba(246, 196, 69, 0.3));
+        drop-shadow(0 6px 3px rgba(0, 0, 0, 1))
+        drop-shadow(0 12px 24px rgba(0, 0, 0, 0.9))
+        drop-shadow(0 0 60px rgba(246, 196, 69, 0.5));
 }
+
 
 /* Hours / minutes / seconds */
 

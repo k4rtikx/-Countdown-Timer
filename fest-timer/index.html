@@ -15,7 +15,7 @@
         rel="stylesheet"
     >
 
-    <link rel="stylesheet" href="style.css?v=4">
+    <link rel="stylesheet" href="style.css?v=5">
 </head>
 
 <body data-popup="">
@@ -47,44 +47,41 @@
         <!-- HEADER -->
         <header id="header" class="hide-in-video">
 
-            <!-- EVENT TITLES -->
-            <div id="eventsRow">
-
-                <div class="event">
-                    <b>CodeSangram 3.0</b>
-                    <span>National Hackathon</span>
-                </div>
-
-                <div class="event">
-                    <b>RanShastra 3.0</b>
-                    <span>AstraArena E-sports Championship</span>
-                </div>
-
-                <div class="event">
-                    <b>iPragyan</b>
-                    <span>Mobile Filmmaking Competition</span>
-                </div>
-
-                <div class="event">
-                    <b>iPragyan</b>
-                    <span>Paper to Pixel</span>
-                </div>
-
-            </div>
-
-            <!-- ALLIANCE UNIVERSITY LOGO -->
+            <!-- ALLIANCE UNIVERSITY LOGO - BIG, WHITE BOX -->
             <div class="logo-slot">
-                <img
-                    id="mainLogo"
-                    src="assets/logos/au.png"
-                    alt="Alliance University"
-                >
+                <div class="au-logo-box">
+                    <img
+                        id="mainLogo"
+                        src="assets/logos/au.png"
+                        alt="Alliance University"
+                    >
+                </div>
             </div>
 
             <!-- OPTIONAL BRANDING FALLBACK -->
             <span id="logoFallback" hidden>
                 ALLIANCE UNIVERSITY
             </span>
+
+            <!-- EVENT LOGOS IN WHITE BOXES -->
+            <div id="eventsRow">
+
+                <div class="event-logo-box">
+                    <img src="assets/logos/82.png" alt="CodeSangam 3.0">
+                    <span class="event-label">National Hackathon</span>
+                </div>
+
+                <div class="event-logo-box">
+                    <img src="assets/logos/80.png" alt="RanShastra">
+                    <span class="event-label">AstraArena E-Sports Championship</span>
+                </div>
+
+                <div class="event-logo-box ipragyan-box">
+                    <span class="ipragyan-text">iPragyan</span>
+                    <span class="event-label">Mobile Filmmaking &amp; Paper to Pixel</span>
+                </div>
+
+            </div>
 
         </header>
 
@@ -175,7 +172,7 @@
     <script src="/socket.io/socket.io.js"></script>
 
     <!-- APPLICATION LOGIC -->
-    <script src="script.js?v=4"></script>
+    <script src="script.js?v=5"></script>
 
 </body>
 </html>

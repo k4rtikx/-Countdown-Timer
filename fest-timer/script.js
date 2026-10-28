@@ -21,18 +21,8 @@ const FACULTY = Array.from({ length: 12 }, (_, i) => ({
     img: `assets/logos/faculty/${i + 1}.jpg`
 }));
 
-// Replace these example sponsors with your actual sponsors.
-const SPONSORS = [
-    { name: "IBM", src: "assets/sponsors/ibm.png" },
-    { name: "TATA", src: "assets/sponsors/tata.png" },
-    { name: "Infosys", src: "assets/sponsors/infosys.png" },
-    { name: "Accenture", src: "assets/sponsors/accenture.png" },
-    { name: "Microsoft", src: "assets/sponsors/microsoft.png" },
-    { name: "Google", src: "assets/sponsors/google.png" },
-    { name: "Amazon", src: "assets/sponsors/amazon.png" },
-    { name: "Coca-Cola", src: "assets/sponsors/cocacola.png" },
-    { name: "Reliance", src: "assets/sponsors/reliance.png" }
-];
+// No sponsor companies - sponsors section is hidden
+const SPONSORS = [];
 
 const DAY_TEXT = {
     day1: "DAY 1",
