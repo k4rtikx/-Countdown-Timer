@@ -253,16 +253,14 @@ body::before {
     margin: 0 auto 6px;
     padding: 6px 110px;
     position: relative;
-    font-size: 54px;
+    font-size: 52px;
     font-weight: 900;
     line-height: 1.3;
     letter-spacing: 10px;
-    color: #fff200;
+    color: #f6c445;
     text-shadow:
-        0 0 10px rgba(255, 240, 0, 1),
-        0 0 30px rgba(255, 200, 0, 0.9),
-        0 0 60px rgba(255, 160, 0, 0.6),
-        0 4px 16px rgba(0, 0, 0, 0.9);
+        0 2px 8px rgba(0, 0, 0, 0.85),
+        0 4px 18px rgba(0, 0, 0, 0.5);
     white-space: nowrap;
 }
 
@@ -272,13 +270,12 @@ body::before {
     position: absolute;
     top: 50%;
     width: 90px;
-    height: 3px;
+    height: 2px;
     background: linear-gradient(
         90deg,
         transparent,
-        #fff200
+        #f6c445
     );
-    filter: drop-shadow(0 0 6px rgba(255, 240, 0, 0.9));
 }
 
 #dayLabel::before {
@@ -290,20 +287,7 @@ body::before {
     transform: scaleX(-1);
 }
 
-/* Countdown digits — PREMIUM */
-
-@keyframes timerGlow {
-    0%, 100% { filter:
-        drop-shadow(0 0 30px rgba(255, 220, 0, 0.95))
-        drop-shadow(0 0 80px rgba(255, 180, 0, 0.7))
-        drop-shadow(0 8px 4px rgba(0, 0, 0, 1))
-        drop-shadow(0 18px 36px rgba(0, 0, 0, 0.95)); }
-    50% { filter:
-        drop-shadow(0 0 50px rgba(255, 230, 0, 1))
-        drop-shadow(0 0 120px rgba(255, 180, 0, 0.85))
-        drop-shadow(0 8px 4px rgba(0, 0, 0, 1))
-        drop-shadow(0 18px 36px rgba(0, 0, 0, 0.95)); }
-}
+/* Countdown digits — CLASSIC SHARP GOLD */
 
 #clock {
     display: block;
@@ -316,24 +300,25 @@ body::before {
     white-space: nowrap;
     background: linear-gradient(
         180deg,
-        #ffffff   0%,
-        #fffde0   5%,
-        #ffe44d  18%,
-        #ffc200  35%,
-        #ff8c00  50%,
-        #ffb800  65%,
-        #ffe44d  80%,
-        #ffffff 100%
+        #fffef0  0%,
+        #ffe566 10%,
+        #f6c445 28%,
+        #c8860a 50%,
+        #f6c445 68%,
+        #ffe566 85%,
+        #fffef0 100%
     );
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    -webkit-text-stroke: 3px rgba(160, 80, 0, 0.55);
-    animation: timerGlow 2.5s ease-in-out infinite;
+    -webkit-text-stroke: 2px rgba(140, 80, 5, 0.45);
+    filter:
+        drop-shadow(0 5px 3px rgba(0, 0, 0, 0.95))
+        drop-shadow(0 10px 20px rgba(0, 0, 0, 0.7));
 }
 
 
-/* Hours / minutes / seconds — premium */
+/* Hours / minutes / seconds — clean classic */
 
 #units {
     display: flex;
@@ -341,23 +326,20 @@ body::before {
     align-items: center;
     gap: 50px;
     margin-top: 10px;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 700;
     letter-spacing: 8px;
-    color: #fff200;
+    color: var(--gold-1);
     text-shadow:
-        0 0 8px rgba(255, 240, 0, 0.9),
-        0 0 20px rgba(255, 200, 0, 0.6),
-        0 2px 8px rgba(0, 0, 0, 0.9);
+        0 2px 6px rgba(0, 0, 0, 0.85);
 }
 
 #units i {
     display: block;
     width: 2px;
-    height: 24px;
-    background: #fff200;
-    box-shadow: 0 0 8px rgba(255, 240, 0, 0.8);
-    opacity: 1;
+    height: 22px;
+    background: var(--gold-2);
+    opacity: 0.85;
 }
 
 /* =====================================================
@@ -667,15 +649,18 @@ body.video-mode #sponsors {
     display: none !important;
 }
 
-/* Premium small corner clock in video mode */
+/* Clean classic corner clock in video mode */
 
 body.video-mode #clock {
     margin: 0;
     font-size: 72px;
     line-height: 1.1;
     letter-spacing: 3px;
-    -webkit-text-stroke: 1px rgba(160, 80, 0, 0.5);
-    animation: timerGlow 2.5s ease-in-out infinite;
+    -webkit-text-stroke: 1px rgba(140, 80, 5, 0.45);
+    filter:
+        drop-shadow(0 3px 2px rgba(0, 0, 0, 0.95))
+        drop-shadow(0 6px 12px rgba(0, 0, 0, 0.7));
+    animation: none;
 }
 
 
