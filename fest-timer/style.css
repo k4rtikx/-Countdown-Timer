@@ -100,13 +100,13 @@ body::before {
     z-index: 22;
 }
 
-/* Corner logos — left (Ab) and right (AO) */
+/* Corner logos — left (AO) and right (Ab) */
 
 .corner-logo {
     position: absolute;
     top: 5px;
-    width: 260px;
-    height: 140px;
+    width: 340px;
+    height: 170px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -116,21 +116,21 @@ body::before {
 }
 
 .corner-logo--left {
-    left: 30px;
+    left: 20px;
 }
 
 .corner-logo--right {
-    right: 30px;
+    right: 20px;
 }
 
 .corner-logo img {
     display: block;
     max-width: 100%;
-    max-height: 130px;
+    max-height: 155px;
     width: auto;
     height: auto;
     object-fit: contain;
-    filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.55));
+    filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.6));
 }
 
 
