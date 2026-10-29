@@ -355,16 +355,17 @@ renderClock();
 /* ================= SCROLLING LOGOS ================= */
 
 /*
-   Sponsor logos 1.png to 45.png move left-to-right
-   along the lower edge of the screen.
-
-   This is separate from the static sponsor cards.
+   Logos scroll right-to-left continuously in sequential order.
+   Each logo appears one by one with no gaps or empty boxes.
 */
 
 const logoLayer = $("logoLayer");
 
 if (logoLayer) {
+    // Sequential order — all logos shown in fixed cycle, no random
     const logoSources = [
+        "assets/logos/82.png",
+        "assets/logos/80.png",
         "assets/logos/1.png",
         "assets/logos/2.png",
         "assets/logos/3.png",
@@ -378,138 +379,117 @@ if (logoLayer) {
         "assets/logos/11.png",
         "assets/logos/12.png",
         "assets/logos/13.png",
-        "assets/logos/80.png",
-        "assets/logos/82.png",
         "assets/logos/AO.png",
         "assets/logos/Ab.png"
     ];
 
-    const logoSpeed = 40; // pixels per second
-    const logoWidth = 220;
-    const logoHeight = 120;
-    const slotWidth = 300;
+    const logoSpeed  = 60;   // pixels per second
+    const logoWidth  = 200;
+    const logoHeight = 110;
+    const gap        = 30;
+    const slotWidth  = logoWidth + gap;
 
-    let logoAnimationId = 0;
-    let previousFrame = 0;
-    let logoLanes = [];
+    let animId   = 0;
+    let prevTime = 0;
+    let slots    = [];
+    let seqIndex = 0;
+    let laneY    = 0;
 
-    /*
-       Keep the moving logos in the lower portion of the viewport.
-       Their positions are calculated from actual viewport height.
-    */
-    function createLogo(laneY) {
-        const element = document.createElement("div");
+    // Pick next image in sequential order, cycling endlessly
+    function nextSrc() {
+        const src = logoSources[seqIndex % logoSources.length];
+        seqIndex++;
+        return src;
+    }
 
-        element.className = "logo";
-
-        const src = logoSources[Math.floor(Math.random() * logoSources.length)];
-
-        Object.assign(element.style, {
-            position: "absolute",
-            width: `${logoWidth}px`,
-            height: `${logoHeight}px`,
-            display: "flex",
+    // Build one logo card with a real <img> element
+    function makeCard(src, x) {
+        const card = document.createElement("div");
+        Object.assign(card.style, {
+            position:       "absolute",
+            left:           "0",
+            top:            `${laneY}px`,
+            width:          `${logoWidth}px`,
+            height:         `${logoHeight}px`,
+            background:     "#ffffff",
+            borderRadius:   "14px",
+            boxShadow:      "0 3px 12px rgba(0,0,0,0.35), 0 0 0 1.5px rgba(246,196,69,0.45)",
+            display:        "flex",
             justifyContent: "center",
-            alignItems: "center",
-            background: "#ffffff",
-            borderRadius: "14px",
-            padding: "10px 14px",
-            boxSizing: "border-box",
-            boxShadow: "0 3px 12px rgba(0,0,0,0.35), 0 0 0 1.5px rgba(246,196,69,0.45)",
-            backgroundImage: `url("${src}")`,
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            opacity: "1",
-            pointerEvents: "none",
-            top: `${laneY}px`,
-            left: "0"
+            alignItems:     "center",
+            pointerEvents:  "none",
+            overflow:       "hidden",
+            padding:        "8px 12px",
+            boxSizing:      "border-box",
+            transform:      `translate3d(${x}px, 0, 0)`
         });
 
-        logoLayer.appendChild(element);
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = "";
+        Object.assign(img.style, {
+            maxWidth:  "100%",
+            maxHeight: "100%",
+            objectFit: "contain",
+            display:   "block"
+        });
 
-        return element;
+        // Hide only the img if broken — card box stays white & solid
+        img.addEventListener("error", () => {
+            img.style.display = "none";
+        });
+
+        card.appendChild(img);
+        logoLayer.appendChild(card);
+        return card;
     }
 
     function setupLogoFlow() {
-        cancelAnimationFrame(logoAnimationId);
-
+        cancelAnimationFrame(animId);
         logoLayer.replaceChildren();
+        slots    = [];
+        seqIndex = 0;
 
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        laneY = Math.max(150, vh - 160);
 
-        const lanesCount = 1;
-        const laneGap = 0;
-
-        /*
-           Position rows above the bottom sponsor area.
-           Adjust these values if your projector framing differs.
-        */
-        const firstLaneY = Math.max(
-            150,
-            viewportHeight - 160
-        );
-
-        logoLanes = [];
-
-        for (let laneIndex = 0; laneIndex < lanesCount; laneIndex++) {
-            const laneY = firstLaneY + laneIndex * laneGap;
-            const slots = [];
-
-            for (
-                let x = -logoWidth;
-                x < viewportWidth + slotWidth;
-                x += slotWidth
-            ) {
-                slots.push({
-                    element: createLogo(laneY),
-                    x
-                });
-            }
-
-            logoLanes.push({
-                y: laneY,
-                slots
-            });
+        // Fill from just off left edge to just off right edge
+        let x = -slotWidth;
+        while (x < vw + slotWidth) {
+            const card = makeCard(nextSrc(), x);
+            slots.push({ card, x });
+            x += slotWidth;
         }
 
-        previousFrame = performance.now();
-        logoAnimationId = requestAnimationFrame(animateLogos);
+        prevTime = performance.now();
+        animId = requestAnimationFrame(tick);
     }
 
-    function animateLogos(now) {
-        const dt = Math.min((now - previousFrame) / 1000, 0.05);
-        previousFrame = now;
+    function tick(now) {
+        const dt = Math.min((now - prevTime) / 1000, 0.05);
+        prevTime = now;
 
-        const viewportWidth = window.innerWidth;
+        const vw = window.innerWidth;
 
-        logoLanes.forEach((lane) => {
-            lane.slots.forEach((slot) => {
-                slot.x += logoSpeed * dt;
+        for (const slot of slots) {
+            slot.x += logoSpeed * dt;
+            slot.card.style.transform = `translate3d(${slot.x}px, 0, 0)`;
+        }
 
-                slot.element.style.transform =
-                    `translate3d(${slot.x}px, 0, 0)`;
-            });
+        // When the leftmost card scrolls off the right edge, recycle it
+        const first = slots[0];
+        if (first && first.x > vw + slotWidth) {
+            first.card.remove();
+            slots.shift();
 
-            const first = lane.slots[0];
+            const last = slots[slots.length - 1];
+            const newX = last ? last.x - slotWidth : -slotWidth;
+            const card = makeCard(nextSrc(), newX);
+            slots.push({ card, x: newX });
+        }
 
-            if (first && first.x > viewportWidth + slotWidth) {
-                const removed = lane.slots.shift();
-                removed.element.remove();
-
-                const last = lane.slots[lane.slots.length - 1];
-
-                const newSlot = {
-                    element: createLogo(lane.y),
-                    x: last ? last.x - slotWidth : -logoWidth
-                };
-
-                lane.slots.push(newSlot);
-            }
-        });
-
-        logoAnimationId = requestAnimationFrame(animateLogos);
+        animId = requestAnimationFrame(tick);
     }
 
     window.addEventListener("resize", setupLogoFlow);
