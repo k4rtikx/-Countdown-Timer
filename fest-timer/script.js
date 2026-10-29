@@ -378,6 +378,8 @@ if (logoLayer) {
         "assets/logos/11.png",
         "assets/logos/12.png",
         "assets/logos/13.png",
+        "assets/logos/80.png",
+        "assets/logos/82.png",
         "assets/logos/AO.png",
         "assets/logos/Ab.png"
     ];
