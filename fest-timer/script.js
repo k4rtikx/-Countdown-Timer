@@ -365,15 +365,21 @@ const logoLayer = $("logoLayer");
 
 if (logoLayer) {
     const logoSources = [
-        "assets/logos/43.png",
-        "assets/logos/44.png",
-        "assets/logos/45.png",
-        "assets/logos/80.png",
-        "assets/logos/81.png",
-        "assets/logos/82.png",
-        "assets/logos/98.png",
-        "assets/logos/99.png",
-        "assets/logos/100.png"
+        "assets/logos/1.png",
+        "assets/logos/2.png",
+        "assets/logos/3.png",
+        "assets/logos/4.png",
+        "assets/logos/5.png",
+        "assets/logos/6.png",
+        "assets/logos/7.png",
+        "assets/logos/8.png",
+        "assets/logos/9.png",
+        "assets/logos/10.png",
+        "assets/logos/11.png",
+        "assets/logos/12.png",
+        "assets/logos/13.png",
+        "assets/logos/AO.png",
+        "assets/logos/Ab.png"
     ];
 
     const logoSpeed = 40; // pixels per second
