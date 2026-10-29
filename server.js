@@ -23,11 +23,13 @@ const ADMIN_KEY = process.env.ADMIN_KEY || "fest123";
 const MODES = Object.freeze({
     day1: {
         label: "DAY 1",
-        hours: 7
+        // Day 1: 1:10 PM → 6:00 PM = 4 hours 50 minutes
+        durationMs: 4 * 60 * 60 * 1000 + 50 * 60 * 1000   // 17,400,000 ms
     },
     day23: {
         label: "DAY 2 & DAY 3",
-        hours: 25
+        // Day 2 & 3: 9:00 AM → 9:00 PM = 12 hours (reset manually each day)
+        durationMs: 12 * 60 * 60 * 1000                    // 43,200,000 ms
     }
 });
 
@@ -118,7 +120,7 @@ function publicState() {
 
         mode: state.mode,
         label: mode.label,
-        duration: mode.hours * 60 * 60 * 1000,
+        duration: mode.durationMs,
 
         video: state.video,
         videoFile: state.videoFile,
