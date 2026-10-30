@@ -23,13 +23,14 @@ const ADMIN_KEY = process.env.ADMIN_KEY || "fest123";
 const MODES = Object.freeze({
     day1: {
         label: "DAY 1",
-        // Day 1: 1:10 PM → 6:00 PM = 4 hours 50 minutes
-        durationMs: 4 * 60 * 60 * 1000 + 50 * 60 * 1000   // 17,400,000 ms
+        // Day 1: 5 hours
+        durationMs: 5 * 60 * 60 * 1000                     // 18,000,000 ms
     },
     day23: {
         label: "DAY 2 & DAY 3",
-        // Day 2 & 3: 9:00 AM → 9:00 PM = 12 hours (reset manually each day)
-        durationMs: 12 * 60 * 60 * 1000                    // 43,200,000 ms
+        // Day 2 & 3: 31 hours total (spans both days continuously)
+        // Day 1 (5h) + Day 2 & 3 (31h) = 36 hours total fest
+        durationMs: 31 * 60 * 60 * 1000                    // 111,600,000 ms
     }
 });
 
