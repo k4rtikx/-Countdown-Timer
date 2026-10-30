@@ -28,8 +28,8 @@ const MODES = Object.freeze({
     },
     day23: {
         label: "DAY 2 & DAY 3",
-        // Day 2 & 3: 23 hours 50 minutes
-        durationMs: 23 * 60 * 60 * 1000 + 50 * 60 * 1000   // 85,800,000 ms
+        // Day 2 & 3: 23 hours 45 minutes
+        durationMs: 23 * 60 * 60 * 1000 + 45 * 60 * 1000   // 85,500,000 ms
     }
 });
 
