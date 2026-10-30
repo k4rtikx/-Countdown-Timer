@@ -28,9 +28,8 @@ const MODES = Object.freeze({
     },
     day23: {
         label: "DAY 2 & DAY 3",
-        // Day 2 & 3: 31 hours total (spans both days continuously)
-        // Day 1 (5h) + Day 2 & 3 (31h) = 36 hours total fest
-        durationMs: 31 * 60 * 60 * 1000                    // 111,600,000 ms
+        // Day 2 & 3: 30 hours 40 minutes (10:20 AM Day 2 → 5:00 PM Day 3)
+        durationMs: 30 * 60 * 60 * 1000 + 40 * 60 * 1000   // 110,400,000 ms
     }
 });
 
